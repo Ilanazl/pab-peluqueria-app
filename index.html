@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PAB Peluquería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div id="app">
+    <!-- LANDING PAGE -->
+    <div id="page-landing" class="page active">
+      <nav class="nav">
+        <div class="nav-logo">PAB <span>Peluquería</span></div>
+        <div class="nav-actions">
+          <button class="btn-ghost" onclick="showPage('page-login')">Iniciar Sesión</button>
+          <button class="btn-primary" onclick="showPage('page-register')">Registrarse</button>
+        </div>
+      </nav>
+      <section class="hero">
+        <div class="hero-badge">✂️ Estilo & Cuidado Personal</div>
+        <h1>Tu belleza,<br/><em>nuestra pasión</em></h1>
+        <p>Agenda tu cita en minutos. Cortes, tintes, cepillado y mucho más para toda la familia.</p>
+        <div class="hero-actions">
+          <button class="btn-primary btn-large" onclick="showPage('page-register')">Agendar Cita</button>
+          <button class="btn-outline btn-large" onclick="scrollToServices()">Ver Servicios</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>500+</strong><span>Clientes felices</span></div>
+          <div class="stat"><strong>8</strong><span>Servicios</span></div>
+          <div class="stat"><strong>5★</strong><span>Calificación</span></div>
+        </div>
+      </section>
+      <section class="services-section" id="services">
+        <h2>Nuestros Servicios</h2>
+        <p class="section-subtitle">Cuidado profesional para toda la familia</p>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon">💈</div>
+            <h3>Corte Caballero</h3>
+            <p>Corte clásico o moderno con acabado profesional</p>
+            <span class="service-price">Desde $25.000</span>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">💇‍♀️</div>
+            <h3>Corte Dama</h3>
+            <p>Transformación completa con estilo personalizado</p>
+            <span class="service-price">Desde $35.000</span>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">👦</div>
+            <h3>Corte Niños</h3>
+            <p>Cortes divertidos y cómodos para los pequeños</p>
+            <span class="service-price">Desde $20.000</span>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">🎨</div>
+            <h3>Tinte</h3>
+            <p>Color vibrante y duradero para tu cabello</p>
+            <span class="service-price">Desde $60.000</span>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">💨</div>
+            <h3>Cepillado</h3>
+            <p>Brillo y suavidad con técnica profesional</p>
+            <span class="service-price">Desde $30.000</span>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">🔥</div>
+            <h3>Planchado</h3>
+            <p>Liso perfecto y duradero sin dañar tu cabello</p>
+            <span class="service-price">Desde $40.000</span>
+          </div>
+        </div>
+      </section>
+      <footer class="footer">
+        <p>© 2025 PAB Peluquería — Cali, Valle del Cauca 🇨🇴</p>
+      </footer>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="page-login" class="page">
+      <div class="auth-container">
+        <button class="back-btn" onclick="showPage('page-landing')">← Volver</button>
+        <div class="auth-card">
+          <div class="auth-logo">PAB <span>Peluquería</span></div>
+          <h2>Bienvenido de vuelta</h2>
+          <p class="auth-subtitle">Inicia sesión para ver tus citas</p>
+          <div id="login-error" class="error-msg" style="display:none"></div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" id="login-email" placeholder="tucorreo@email.com"/>
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="login-password" placeholder="••••••••"/>
+          </div>
+          <button class="btn-primary btn-full" onclick="handleLogin()">Iniciar Sesión</button>
+          <p class="auth-switch">¿No tienes cuenta? <a onclick="showPage('page-register')">Regístrate aquí</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER PAGE -->
+    <div id="page-register" class="page">
+      <div class="auth-container">
+        <button class="back-btn" onclick="showPage('page-landing')">← Volver</button>
+        <div class="auth-card">
+          <div class="auth-logo">PAB <span>Peluquería</span></div>
+          <h2>Crear cuenta</h2>
+          <p class="auth-subtitle">Regístrate y agenda tu primera cita</p>
+          <div id="register-error" class="error-msg" style="display:none"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="reg-name" placeholder="Tu nombre"/>
+            </div>
+            <div class="form-group">
+              <label>Apellido</label>
+              <input type="text" id="reg-lastname" placeholder="Tu apellido"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" id="reg-email" placeholder="tucorreo@email.com"/>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="reg-phone" placeholder="300 000 0000"/>
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres"/>
+          </div>
+          <button class="btn-primary btn-full" onclick="handleRegister()">Crear Cuenta</button>
+          <p class="auth-switch">¿Ya tienes cuenta? <a onclick="showPage('page-login')">Inicia sesión</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD CLIENTE -->
+    <div id="page-dashboard" class="page">
+      <nav class="nav nav-dashboard">
+        <div class="nav-logo">PAB <span>Peluquería</span></div>
+        <div class="nav-user">
+          <span id="user-greeting">Hola!</span>
+          <button class="btn-ghost btn-sm" onclick="handleLogout()">Salir</button>
+        </div>
+      </nav>
+      <div class="dashboard-container">
+        <div class="dashboard-tabs">
+          <button class="tab-btn active" onclick="switchTab('tab-book', this)">📅 Agendar Cita</button>
+          <button class="tab-btn" onclick="switchTab('tab-appointments', this)">📋 Mis Citas</button>
+        </div>
+
+        <!-- AGENDAR CITA -->
+        <div id="tab-book" class="tab-content active">
+          <div class="book-card">
+            <h2>Agenda tu cita</h2>
+            <div id="book-success" class="success-msg" style="display:none"></div>
+            <div id="book-error" class="error-msg" style="display:none"></div>
+            <div class="form-group">
+              <label>Servicio</label>
+              <select id="book-service">
+                <option value="">Selecciona un servicio</option>
+                <option value="Corte Caballero">💈 Corte Caballero - $25.000</option>
+                <option value="Corte Dama">💇‍♀️ Corte Dama - $35.000</option>
+                <option value="Corte Niños">👦 Corte Niños - $20.000</option>
+                <option value="Tinte">🎨 Tinte - $60.000</option>
+                <option value="Cepillado">💨 Cepillado - $30.000</option>
+                <option value="Planchado">🔥 Planchado - $40.000</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" id="book-date"/>
+              </div>
+              <div class="form-group">
+                <label>Hora</label>
+                <select id="book-time">
+                  <option value="">Selecciona hora</option>
+                  <option>08:00 AM</option><option>08:30 AM</option>
+                  <option>09:00 AM</option><option>09:30 AM</option>
+                  <option>10:00 AM</option><option>10:30 AM</option>
+                  <option>11:00 AM</option><option>11:30 AM</option>
+                  <option>01:00 PM</option><option>01:30 PM</option>
+                  <option>02:00 PM</option><option>02:30 PM</option>
+                  <option>03:00 PM</option><option>03:30 PM</option>
+                  <option>04:00 PM</option><option>04:30 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Nota adicional (opcional)</label>
+              <textarea id="book-note" placeholder="Ej: quiero franja, tinte castaño oscuro..."></textarea>
+            </div>
+            <button class="btn-primary btn-full" onclick="handleBooking()">Confirmar Cita ✓</button>
+          </div>
+        </div>
+
+        <!-- MIS CITAS -->
+        <div id="tab-appointments" class="tab-content">
+          <div class="appointments-header">
+            <h2>Mis Citas</h2>
+            <button class="btn-primary btn-sm" onclick="loadUserAppointments()">↻ Actualizar</button>
+          </div>
+          <div id="user-appointments-list">
+            <div class="loading">Cargando citas...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div id="page-admin" class="page">
+      <nav class="nav nav-admin">
+        <div class="nav-logo">PAB <span>Admin</span></div>
+        <div class="nav-user">
+          <span class="admin-badge">👑 Administrador</span>
+          <button class="btn-ghost btn-sm" onclick="handleLogout()">Salir</button>
+        </div>
+      </nav>
+      <div class="admin-container">
+        <div class="dashboard-tabs">
+          <button class="tab-btn active" onclick="switchTab('admin-tab-appointments', this)">📅 Citas</button>
+          <button class="tab-btn" onclick="switchTab('admin-tab-users', this)">👥 Usuarios</button>
+          <button class="tab-btn" onclick="switchTab('admin-tab-new', this)">➕ Nueva Cita</button>
+        </div>
+
+        <!-- CITAS ADMIN -->
+        <div id="admin-tab-appointments" class="tab-content active">
+          <div class="appointments-header">
+            <h2>Todas las Citas</h2>
+            <button class="btn-primary btn-sm" onclick="loadAllAppointments()">↻ Actualizar</button>
+          </div>
+          <div id="filter-bar" class="filter-bar">
+            <select id="filter-status" onchange="filterAppointments()">
+              <option value="">Todos los estados</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="confirmada">Confirmada</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+            <input type="date" id="filter-date" onchange="filterAppointments()" placeholder="Filtrar por fecha"/>
+          </div>
+          <div id="all-appointments-list">
+            <div class="loading">Cargando citas...</div>
+          </div>
+        </div>
+
+        <!-- USUARIOS ADMIN -->
+        <div id="admin-tab-users" class="tab-content">
+          <div class="appointments-header">
+            <h2>Usuarios Registrados</h2>
+            <button class="btn-primary btn-sm" onclick="loadAllUsers()">↻ Actualizar</button>
+          </div>
+          <div id="all-users-list">
+            <div class="loading">Cargando usuarios...</div>
+          </div>
+        </div>
+
+        <!-- NUEVA CITA ADMIN -->
+        <div id="admin-tab-new" class="tab-content">
+          <div class="book-card">
+            <h2>Crear Cita Manual</h2>
+            <div id="admin-book-success" class="success-msg" style="display:none"></div>
+            <div id="admin-book-error" class="error-msg" style="display:none"></div>
+            <div class="form-group">
+              <label>Cliente (correo)</label>
+              <input type="email" id="admin-client-email" placeholder="correo@cliente.com"/>
+            </div>
+            <div class="form-group">
+              <label>Nombre del cliente</label>
+              <input type="text" id="admin-client-name" placeholder="Nombre completo"/>
+            </div>
+            <div class="form-group">
+              <label>Servicio</label>
+              <select id="admin-book-service">
+                <option value="">Selecciona un servicio</option>
+                <option value="Corte Caballero">💈 Corte Caballero</option>
+                <option value="Corte Dama">💇‍♀️ Corte Dama</option>
+                <option value="Corte Niños">👦 Corte Niños</option>
+                <option value="Tinte">🎨 Tinte</option>
+                <option value="Cepillado">💨 Cepillado</option>
+                <option value="Planchado">🔥 Planchado</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" id="admin-book-date"/>
+              </div>
+              <div class="form-group">
+                <label>Hora</label>
+                <select id="admin-book-time">
+                  <option value="">Selecciona hora</option>
+                  <option>08:00 AM</option><option>08:30 AM</option>
+                  <option>09:00 AM</option><option>09:30 AM</option>
+                  <option>10:00 AM</option><option>10:30 AM</option>
+                  <option>11:00 AM</option><option>11:30 AM</option>
+                  <option>01:00 PM</option><option>01:30 PM</option>
+                  <option>02:00 PM</option><option>02:30 PM</option>
+                  <option>03:00 PM</option><option>03:30 PM</option>
+                  <option>04:00 PM</option><option>04:30 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Nota</label>
+              <textarea id="admin-book-note" placeholder="Instrucciones especiales..."></textarea>
+            </div>
+            <button class="btn-primary btn-full" onclick="handleAdminBooking()">Crear Cita</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR CITA -->
+    <div id="modal-edit-appointment" class="modal" style="display:none">
+      <div class="modal-overlay" onclick="closeModal('modal-edit-appointment')"></div>
+      <div class="modal-content">
+        <h3>Editar Cita</h3>
+        <input type="hidden" id="edit-appointment-id"/>
+        <div class="form-group">
+          <label>Servicio</label>
+          <select id="edit-service">
+            <option value="Corte Caballero">💈 Corte Caballero</option>
+            <option value="Corte Dama">💇‍♀️ Corte Dama</option>
+            <option value="Corte Niños">👦 Corte Niños</option>
+            <option value="Tinte">🎨 Tinte</option>
+            <option value="Cepillado">💨 Cepillado</option>
+            <option value="Planchado">🔥 Planchado</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha</label>
+            <input type="date" id="edit-date"/>
+          </div>
+          <div class="form-group">
+            <label>Hora</label>
+            <select id="edit-time">
+              <option>08:00 AM</option><option>08:30 AM</option>
+              <option>09:00 AM</option><option>09:30 AM</option>
+              <option>10:00 AM</option><option>10:30 AM</option>
+              <option>11:00 AM</option><option>11:30 AM</option>
+              <option>01:00 PM</option><option>01:30 PM</option>
+              <option>02:00 PM</option><option>02:30 PM</option>
+              <option>03:00 PM</option><option>03:30 PM</option>
+              <option>04:00 PM</option><option>04:30 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="edit-status">
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nota</label>
+          <textarea id="edit-note"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-ghost" onclick="closeModal('modal-edit-appointment')">Cancelar</button>
+          <button class="btn-primary" onclick="saveEditAppointment()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR USUARIO -->
+    <div id="modal-edit-user" class="modal" style="display:none">
+      <div class="modal-overlay" onclick="closeModal('modal-edit-user')"></div>
+      <div class="modal-content">
+        <h3>Editar Usuario</h3>
+        <input type="hidden" id="edit-user-id"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="edit-user-name"/>
+          </div>
+          <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" id="edit-user-lastname"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" id="edit-user-phone"/>
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="edit-user-role">
+            <option value="cliente">Cliente</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-ghost" onclick="closeModal('modal-edit-user')">Cancelar</button>
+          <button class="btn-primary" onclick="saveEditUser()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "pab-peluqueria",
+  "version": "1.0.0",
+  "description": "## Lo que incluye este proyecto - ✅ Página web completa con diseño cálido y profesional - ✅ Registro e inicio de sesión con Firebase Auth - ✅ Agendamiento de citas con calendario - ✅ Panel de cliente: ver y cancelar citas - ✅ Panel admin CRUD: crear, editar, eliminar citas y usuarios - ✅ Integración con n8n para envío de correos automáticos",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "resend": "^6.12.3"
+  }
+}
