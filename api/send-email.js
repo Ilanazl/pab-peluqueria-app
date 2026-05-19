@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
     // ===== CORREO AL CLIENTE =====
     await resend.emails.send({
       from: 'PAB Peluquería <onboarding@resend.dev>',
-      to: userEmail,
+      to: ADMIN_EMAIL,
       subject: '✂️ Tu cita en PAB Peluquería',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
