@@ -110,8 +110,8 @@ window.handleRegister = async function() {
       createdAt: serverTimestamp()
     });
 
-    // Enviar correo de bienvenida via n8n webhook
-    sendN8nWebhook('nuevo_usuario', {
+    // Enviar correo mediante API + Resend
+    sendEmail('nuevo_usuario', {
       userName: `${name} ${lastname}`,
       userEmail: email,
       phone
@@ -195,8 +195,8 @@ window.handleBooking = async function() {
 
     const docRef = await addDoc(collection(db, 'appointments'), apptData);
 
-    // Notificar via n8n webhook → correo al cliente y al admin
-    sendN8nWebhook('nueva_cita', {
+    // Notificar via sendEmail webhook → correo al cliente y al admin
+    sendEmail('nueva_cita', {
       appointmentId: docRef.id,
       userName: apptData.userName,
       userEmail: apptData.userEmail,
@@ -348,7 +348,7 @@ window.saveEditAppointment = async function() {
 window.confirmAppointment = async function(id, email, name, service, date, time) {
   await updateDoc(doc(db, 'appointments', id), { status: 'confirmada' });
 
-  sendN8nWebhook('cita_confirmada', {
+  sendEmail('cita_confirmada', {
     userEmail: email,
     userName: name,
     service, date, time,
@@ -466,7 +466,7 @@ window.handleAdminBooking = async function() {
     };
     await addDoc(collection(db, 'appointments'), apptData);
 
-    sendN8nWebhook('cita_confirmada', {
+    sendEmail('cita_confirmada', {
       userEmail: clientEmail,
       userName: clientName,
       service, date, time,
@@ -490,20 +490,34 @@ window.handleAdminBooking = async function() {
 };
 
 // ============================================================
-// N8N WEBHOOK - Envía datos a n8n para correos automáticos
+// // API EMAIL RESEND - para correos automáticos
 // ============================================================
-async function sendN8nWebhook(event, data) {
+async function sendEmail(event, data) {
   try {
-    await fetch('/api/send-email', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event, ...data, timestamp: new Date().toISOString() })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        event,
+        ...data,
+        timestamp: new Date().toISOString()
+      })
     });
+
+    const result = await res.json();
+
+    console.log('EMAIL RESULT:', result);
+
+    if (!res.ok) {
+      throw new Error(result.error || 'Error enviando correo');
+    }
+
   } catch (e) {
-    console.warn('Error enviando correo:', e.message);
+    console.error('ERROR EMAIL:', e);
   }
 }
-
 // ============================================================
 // HELPERS
 // ============================================================

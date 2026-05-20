@@ -10,6 +10,15 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = 'izplopz@gmail.com';
 
 module.exports = async (req, res) => {
+  // Headers CORS - necesarios para que el navegador permita la llamada
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Solo acepta peticiones POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
@@ -21,7 +30,7 @@ module.exports = async (req, res) => {
     // ===== CORREO AL CLIENTE =====
     await resend.emails.send({
       from: 'PAB Peluquería <onboarding@resend.dev>',
-      to: ADMIN_EMAIL,
+      to: 'izplopz@gmail.com',
       subject: '✂️ Tu cita en PAB Peluquería',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -54,7 +63,7 @@ module.exports = async (req, res) => {
     // ===== CORREO AL ADMIN =====
     await resend.emails.send({
       from: 'PAB Peluquería <onboarding@resend.dev>',
-      to: ADMIN_EMAIL,
+      to: 'izplopz@gmail.com',
       subject: `🔔 Nueva cita — ${userName} — ${service}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
