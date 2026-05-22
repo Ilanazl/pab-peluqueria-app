@@ -6,7 +6,6 @@
 - ✅ Agendamiento de citas con calendario
 - ✅ Panel de cliente: ver y cancelar citas
 - ✅ Panel admin CRUD: crear, editar, eliminar citas y usuarios
-- ✅ Integración con n8n para envío de correos automáticos
 
 ---
 
@@ -58,28 +57,6 @@ service cloud.firestore {
 - Pégalos en el archivo `firebase-config.js` reemplazando los valores de ejemplo
 
 ---
-
-## PASO 3 — Configurar n8n para correos
-
-### Opción A: n8n en la nube (más fácil)
-1. Ve a https://n8n.io → Crea cuenta gratis
-2. Crea un nuevo **Workflow**
-3. Agrega nodo: **Webhook** (modo POST) → Copia la URL del webhook
-4. Pega esa URL en `app.js` donde dice `N8N_WEBHOOK_URL`
-
-### Flujo n8n para correos:
-```
-[Webhook] → [IF event == 'nueva_cita'] → [Gmail/SendGrid: correo al cliente]
-                                        → [Gmail/SendGrid: correo al admin]
-         → [IF event == 'cita_confirmada'] → [Gmail: correo de confirmación]
-         → [IF event == 'nuevo_usuario'] → [Gmail: correo de bienvenida]
-```
-
-### Configurar Gmail en n8n:
-- Nodo **Send Email** o **Gmail**
-- Conecta tu cuenta Gmail (izplopz@gmail.com)
-- Para el correo del cliente usa: `{{$json.userEmail}}`
-- Para el correo del admin usa: `{{$json.adminEmail}}`
 
 ### Plantilla de correo nueva cita:
 ```
