@@ -6,7 +6,7 @@
 export const SERVICIOS = [
   { nombre: "Corte Caballero", emoji: "💈", precio: 12000 },
   { nombre: "Corte Dama",      emoji: "💇‍♀️", precio: 12000 },
-  { nombre: "Corte Niños",     emoji: "👦",  precio: 12000 },
+  { nombre: "Corte Niños",     emoji: "👦",  precio: 10000 },
   { nombre: "Tinte",           emoji: "🎨",  precio: 12000 },
   { nombre: "Cepillado",       emoji: "💨",  precio: 25000 },
   { nombre: "Planchado",       emoji: "🔥",  precio: 25000 },

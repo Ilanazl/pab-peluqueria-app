@@ -542,11 +542,46 @@ function firebaseError(code) {
 }
 
 // Set min date for booking inputs
+function poblarSelects() {
+  const selectsServicio = ['book-service', 'admin-book-service', 'edit-service'];
+  const selectsHora     = ['book-time', 'admin-book-time', 'edit-time'];
+
+  const opcionesServicio = SERVICIOS.map(s =>
+    `<option value="${s.nombre}">${s.emoji} ${s.nombre} - $${s.precio.toLocaleString('es-CO')}</option>`
+  ).join('');
+
+  const opcionesHora = HORARIOS.map(h =>
+    `<option value="${h}">${h}</option>`
+  ).join('');
+
+  selectsServicio.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<option value="">Selecciona un servicio</option>` + opcionesServicio;
+  });
+
+  selectsHora.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<option value="">Selecciona hora</option>` + opcionesHora;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
-  const dateInputs = ['book-date', 'admin-book-date'];
-  dateInputs.forEach(id => {
+  ['book-date', 'admin-book-date'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.min = today;
   });
+
+  poblarSelects();
+  // Tarjetas de servicios en el landing
+const grid = document.getElementById('services-grid');
+if (grid) {
+  grid.innerHTML = SERVICIOS.map(s => `
+    <div class="service-card">
+      <div class="service-icon">${s.emoji}</div>
+      <h3>${s.nombre}</h3>
+      <span class="service-price">Desde $${s.precio.toLocaleString('es-CO')}</span>
+    </div>
+  `).join('');
+}
 });
