@@ -101,6 +101,14 @@ window.handleRegister = async function() {
     return;
   }
 
+// Validar aceptación de términos
+  const terms = document.getElementById('reg-terms');
+  if (!terms.checked) {
+    errEl.textContent = 'Debes aceptar el tratamiento de datos personales para registrarte.';
+    errEl.style.display = 'block';
+    return;
+  }
+
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const role = email === ADMIN_EMAIL ? 'admin' : 'cliente';
@@ -566,6 +574,10 @@ function poblarSelects() {
   });
 }
 
+window.showTermsModal = function() {
+  document.getElementById('modal-terms').style.display = 'flex';
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   ['book-date', 'admin-book-date'].forEach(id => {
@@ -574,6 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   poblarSelects();
+
   // Tarjetas de servicios en el landing
 const grid = document.getElementById('services-grid');
 if (grid) {
