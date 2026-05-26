@@ -192,6 +192,22 @@ window.handleBooking = async function() {
   }
 
   try {
+
+    // Verificar disponibilidad
+const disponibilidadQuery = query(
+  collection(db, 'appointments'),
+  where('date', '==', date),
+  where('time', '==', time),
+  where('status', '!=', 'cancelada')
+);
+const disponibilidadSnap = await getDocs(disponibilidadQuery);
+
+if (!disponibilidadSnap.empty) {
+  errEl.textContent = '⚠️ Esa hora ya está reservada. Por favor elige otra hora.';
+  errEl.style.display = 'block';
+  return;
+}
+
     const apptData = {
       userId: currentUser.uid,
       userName: `${currentUserData.name} ${currentUserData.lastname}`,
