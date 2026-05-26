@@ -221,7 +221,7 @@ if (!snapPendiente.empty || !snapConfirmada.empty) {
       userEmail: currentUser.email,
       userPhone: currentUserData.phone || '',
       service, date, time, note,
-      status: 'pendiente',
+      status: 'confirmada',
       createdAt: serverTimestamp()
     };
 
