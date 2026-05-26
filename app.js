@@ -193,16 +193,23 @@ window.handleBooking = async function() {
 
   try {
 
-    // Verificar disponibilidad
-const disponibilidadQuery = query(
-  collection(db, 'appointments'),
-  where('date', '==', date),
-  where('time', '==', time),
-  where('status', '!=', 'cancelada')
-);
-const disponibilidadSnap = await getDocs(disponibilidadQuery);
+   // Verificar disponibilidad — busca citas pendientes o confirmadas en esa fecha y hora
+const [snapPendiente, snapConfirmada] = await Promise.all([
+  getDocs(query(
+    collection(db, 'appointments'),
+    where('date', '==', date),
+    where('time', '==', time),
+    where('status', '==', 'pendiente')
+  )),
+  getDocs(query(
+    collection(db, 'appointments'),
+    where('date', '==', date),
+    where('time', '==', time),
+    where('status', '==', 'confirmada')
+  ))
+]);
 
-if (!disponibilidadSnap.empty) {
+if (!snapPendiente.empty || !snapConfirmada.empty) {
   errEl.textContent = '⚠️ Esa hora ya está reservada. Por favor elige otra hora.';
   errEl.style.display = 'block';
   return;
