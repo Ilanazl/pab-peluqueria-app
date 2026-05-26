@@ -283,8 +283,8 @@ window.loadUserAppointments = async function() {
           <span class="status-badge status-${a.status}">${a.status}</span>
         </div>
         <div class="appt-actions">
-          ${a.status === 'pendiente' ? `<button class="btn-danger" onclick="cancelUserAppointment('${a.id}')">Cancelar</button>` : ''}
-        </div>
+        ${a.status !== 'cancelada' ? `<button class="btn-danger" onclick="cancelUserAppointment('${a.id}')">Cancelar</button>` : ''}
+          </div>
       </div>
     `).join('');
   } catch (e) {
