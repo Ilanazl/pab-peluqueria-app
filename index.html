@@ -102,10 +102,12 @@
             <div class="form-group terms-group">
   <label class="terms-label">
     <input type="checkbox" id="reg-terms"/>
-    Acepto el <a href="#" onclick="showTermsModal()">tratamiento de datos personales</a>
+    Acepto el <a href="/politica-privacidad.html" target="_blank">
+  tratamiento de datos personales
+</a>
   </label>
 </div>
-          </div>
+  
           <button class="btn-primary btn-full" onclick="handleRegister()">Crear Cuenta</button>
           <p class="auth-switch">¿Ya tienes cuenta? <a onclick="showPage('page-login')">Inicia sesión</a></p>
         </div>
@@ -152,6 +154,11 @@
               <label>Nota adicional (opcional)</label>
               <textarea id="book-note" placeholder="Ej: quiero franja, tinte castaño oscuro..."></textarea>
             </div>
+            <!-- Aviso de privacidad -->
+<p class="privacy-note">
+  Al confirmar, aceptas que tus datos sean tratados conforme a nuestra
+  <a href="/politica-privacidad.html" target="_blank">Política de Privacidad</a>.
+</p>
             <button class="btn-primary btn-full" onclick="handleBooking()">Confirmar Cita ✓</button>
           </div>
         </div>
@@ -326,28 +333,6 @@
         </div>
       </div>
     </div>
-
-<!-- MODAL TÉRMINOS -->
-<div id="modal-terms" class="modal" style="display:none">
-  <div class="modal-overlay" onclick="closeModal('modal-terms')"></div>
-  <div class="modal-content">
-    <h3>Tratamiento de Datos Personales</h3>
-    <div class="terms-text">
-      <p>De conformidad con la Ley 1581 de 2012 y el Decreto 1377 de 2013, <strong>PAB Peluquería</strong> informa que los datos personales suministrados serán tratados con las siguientes finalidades:</p>
-      <ul>
-        <li>Gestionar el agendamiento de citas.</li>
-        <li>Enviar confirmaciones y recordatorios por correo electrónico.</li>
-        <li>Mejorar la calidad del servicio prestado.</li>
-      </ul>
-      <p>Sus datos no serán compartidos con terceros sin su autorización. Puede ejercer sus derechos de acceso, corrección o supresión escribiendo a nuestro correo de contacto.</p>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-primary" onclick="closeModal('modal-terms')">Entendido</button>
-    </div>
-  </div>
-</div>
-
-  </div>
 
   <!-- Firebase SDK -->
   <script type="module" src="firebase-config.js"></script>
