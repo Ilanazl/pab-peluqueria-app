@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Política de Privacidad — PAB Peluquería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-bg:       #0f0f0f;
+      --color-surface:  #1a1a1a;
+      --color-border:   #2a2a2a;
+      --color-accent:   #c9a96e;
+      --color-text:     #e8e8e8;
+      --color-muted:    #888;
+      --font-display:   'Playfair Display', Georgia, serif;
+      --font-body:      'DM Sans', system-ui, sans-serif;
+      --radius:         12px;
+      --max-width:      760px;
+    }
+
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--color-text);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--color-accent); }
+
+    .btn-back {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-accent);
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      border-radius: 8px;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-back:hover {
+      background: var(--color-accent);
+      color: #000;
+    }
+
+    /* HERO STRIP */
+    .hero-strip {
+      background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+      border-bottom: 1px solid var(--color-border);
+      padding: 3rem 2rem 2.5rem;
+      text-align: center;
+    }
+
+    .hero-strip .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-strip h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-strip .meta {
+      font-size: 0.875rem;
+      color: var(--color-muted);
+    }
+
+    .hero-strip .meta span {
+      color: var(--color-accent);
+      font-weight: 500;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ÍNDICE */
+    .toc {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-accent);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 3rem;
+    }
+
+    .toc-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 1rem;
+    }
+
+    .toc ol {
+      padding-left: 1.25rem;
+    }
+
+    .toc li {
+      margin-bottom: 0.4rem;
+    }
+
+    .toc a {
+      color: var(--color-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .toc a:hover { color: var(--color-accent); }
+
+    /* SECCIONES */
+    section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 80px;
+    }
+
+    section h2 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    section h2 .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: #000;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    p { margin-bottom: 1rem; color: var(--color-text); }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      padding-left: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+      color: var(--color-text);
+    }
+
+    /* CARDS para proveedores */
+    .provider-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 500px) {
+      .provider-grid { grid-template-columns: 1fr; }
+    }
+
+    .provider-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .provider-card .provider-name {
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 0.35rem;
+      font-size: 0.95rem;
+    }
+
+    .provider-card .provider-role {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .provider-card a {
+      font-size: 0.8rem;
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    .provider-card a:hover { text-decoration: underline; }
+
+    /* DERECHOS */
+    .rights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 500px) {
+      .rights-grid { grid-template-columns: 1fr; }
+    }
+
+    .right-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .right-item .icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .right-item .label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--color-text);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .right-item .desc {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+    }
+
+    /* CONTACTO */
+    .contact-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .contact-box .icon { font-size: 1.75rem; flex-shrink: 0; }
+
+    .contact-box .info .label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .contact-box .info a {
+      color: var(--color-accent);
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+
+    .contact-box .info a:hover { text-decoration: underline; }
+
+    /* VERSION BADGE */
+    .version-bar {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      font-size: 0.82rem;
+      color: var(--color-muted);
+    }
+
+    .version-bar strong { color: var(--color-accent); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--color-border);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--color-muted);
+    }
+
+    footer a {
+      color: var(--color-accent);
+      text-decoration: none;
+    }
+
+    /* highlight inline */
+    strong { color: var(--color-text); font-weight: 600; }
+
+    em {
+      font-style: normal;
+      color: var(--color-accent);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="https://pab-peluqueria-app.vercel.app/" class="nav-logo">PAB <span>Peluquería</span></a>
+    <a href="https://pab-peluqueria-app.vercel.app/" class="btn-back">← Volver a la app</a>
+  </nav>
+
+  <div class="hero-strip">
+    <div class="tag">Documento Legal</div>
+    <h1>Política de Privacidad</h1>
+    <p class="meta">
+      Versión <span>v1.0</span> &nbsp;·&nbsp; Vigente desde <span>junio 2025</span> &nbsp;·&nbsp;
+      Aplica a <span>pab-peluqueria-app.vercel.app</span>
+    </p>
+  </div>
+
+  <main>
+
+    <!-- ÍNDICE -->
+    <nav class="toc" aria-label="Tabla de contenido">
+      <p class="toc-title">Contenido</p>
+      <ol>
+        <li><a href="#s1">Responsable del tratamiento</a></li>
+        <li><a href="#s2">Datos que recopilamos</a></li>
+        <li><a href="#s3">Finalidad del tratamiento</a></li>
+        <li><a href="#s4">Proveedores externos</a></li>
+        <li><a href="#s5">Transferencia internacional de datos</a></li>
+        <li><a href="#s6">Tiempo de conservación</a></li>
+        <li><a href="#s7">Tus derechos</a></li>
+        <li><a href="#s8">Seguridad</a></li>
+        <li><a href="#s9">Menores de edad</a></li>
+        <li><a href="#s10">Contacto</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section id="s1">
+      <h2><span class="num">1</span> Responsable del tratamiento</h2>
+      <p>
+        El responsable del tratamiento de tus datos personales es <strong>PAB Peluquería</strong>,
+        establecimiento de estética y cuidado personal ubicado en <strong>Cali, Valle del Cauca, Colombia</strong>.
+      </p>
+      <p>
+        Para cualquier consulta relacionada con tus datos personales puedes escribirnos a:
+        <em>pabpeluqueria.contacto@gmail.com</em>
+      </p>
+    </section>
+
+    <!-- 2 -->
+    <section id="s2">
+      <h2><span class="num">2</span> Datos que recopilamos</h2>
+      <p>Cuando te registras o agendas una cita, recopilamos los siguientes datos:</p>
+      <ul>
+        <li><strong>Datos de identidad:</strong> nombre y apellido.</li>
+        <li><strong>Datos de contacto:</strong> correo electrónico y número de teléfono.</li>
+        <li><strong>Datos de la cita:</strong> servicio seleccionado, fecha, hora y notas adicionales.</li>
+        <li><strong>Datos técnicos:</strong> fecha y hora de registro, y registro del consentimiento otorgado.</li>
+      </ul>
+      <p>
+        <strong>No recopilamos</strong> datos de pago, documentos de identidad, datos de salud
+        ni ningún dato considerado sensible por la Ley 1581 de 2012.
+      </p>
+    </section>
+
+    <!-- 3 -->
+    <section id="s3">
+      <h2><span class="num">3</span> Finalidad del tratamiento</h2>
+      <p>Tus datos se usan exclusivamente para:</p>
+      <ul>
+        <li>Gestionar el agendamiento, confirmación y seguimiento de tus citas.</li>
+        <li>Enviarte notificaciones y recordatorios relacionados con tus citas por correo electrónico.</li>
+        <li>Permitirte administrar tu cuenta y consultar tu historial de citas.</li>
+        <li>Mejorar la calidad del servicio prestado.</li>
+      </ul>
+      <p>
+        Tus datos <strong>no serán usados con fines publicitarios</strong> ni compartidos con
+        terceros para propósitos distintos a los descritos sin tu autorización expresa.
+      </p>
+    </section>
+
+    <!-- 4 -->
+    <section id="s4">
+      <h2><span class="num">4</span> Proveedores externos</h2>
+      <p>
+        Para operar esta aplicación utilizamos los siguientes servicios externos.
+        Cada uno procesa tus datos bajo sus propias políticas de privacidad:
+      </p>
+      <div class="provider-grid">
+        <div class="provider-card">
+          <p class="provider-name">Firebase (Google LLC)</p>
+          <p class="provider-role">Autenticación de usuarios y base de datos (Firestore)</p>
+          <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">
+            Ver política de privacidad →
+          </a>
+        </div>
+        <div class="provider-card">
+          <p class="provider-name">Resend</p>
+          <p class="provider-role">Envío de correos de confirmación y recordatorios</p>
+          <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">
+            Ver política de privacidad →
+          </a>
+        </div>
+        <div class="provider-card">
+          <p class="provider-name">Vercel Inc.</p>
+          <p class="provider-role">Alojamiento y entrega de la aplicación web</p>
+          <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">
+            Ver política de privacidad →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="s5">
+      <h2><span class="num">5</span> Transferencia internacional de datos</h2>
+      <p>
+        Al utilizar los servicios indicados en la sección anterior, tus datos personales
+        pueden ser almacenados y procesados en servidores ubicados fuera de Colombia,
+        principalmente en <strong>Estados Unidos</strong>.
+      </p>
+      <p>
+        Esta transferencia se realiza con proveedores que cumplen estándares de seguridad
+        reconocidos internacionalmente. Al registrarte y aceptar esta política, autorizas
+        expresamente dicha transferencia de conformidad con el Artículo 26 de la Ley 1581 de 2012.
+      </p>
+    </section>
+
+    <!-- 6 -->
+    <section id="s6">
+      <h2><span class="num">6</span> Tiempo de conservación</h2>
+      <p>
+        Tus datos se conservarán mientras tu cuenta esté activa o durante el tiempo
+        necesario para cumplir con las finalidades descritas. Si solicitas la eliminación
+        de tu cuenta, procederemos a suprimir tus datos personales en un plazo máximo
+        de <strong>15 días hábiles</strong>.
+      </p>
+      <p>
+        El historial de citas podrá conservarse de forma anonimizada para fines estadísticos
+        internos, sin que sea posible asociarlo a tu identidad.
+      </p>
+    </section>
+
+    <!-- 7 -->
+    <section id="s7">
+      <h2><span class="num">7</span> Tus derechos</h2>
+      <p>
+        De conformidad con la Ley 1581 de 2012, tienes los siguientes derechos sobre
+        tus datos personales:
+      </p>
+      <div class="rights-grid">
+        <div class="right-item">
+          <span class="icon">👁</span>
+          <div>
+            <span class="label">Acceso</span>
+            <span class="desc">Conocer qué datos tenemos sobre ti.</span>
+          </div>
+        </div>
+        <div class="right-item">
+          <span class="icon">✏️</span>
+          <div>
+            <span class="label">Rectificación</span>
+            <span class="desc">Corregir datos inexactos o incompletos.</span>
+          </div>
+        </div>
+        <div class="right-item">
+          <span class="icon">🗑️</span>
+          <div>
+            <span class="label">Supresión</span>
+            <span class="desc">Solicitar la eliminación de tus datos.</span>
+          </div>
+        </div>
+        <div class="right-item">
+          <span class="icon">🚫</span>
+          <div>
+            <span class="label">Revocación</span>
+            <span class="desc">Revocar el consentimiento otorgado.</span>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top: 1rem;">
+        Para ejercer cualquiera de estos derechos escríbenos a <em>pabpeluqueria.contacto@gmail.com</em>
+        indicando tu nombre, el derecho que deseas ejercer y, si es posible,
+        el correo con el que te registraste. Responderemos en un plazo máximo de
+        <strong>15 días hábiles</strong>.
+      </p>
+    </section>
+
+    <!-- 8 -->
+    <section id="s8">
+      <h2><span class="num">8</span> Seguridad</h2>
+      <p>
+        Implementamos medidas técnicas razonables para proteger tus datos, incluyendo:
+      </p>
+      <ul>
+        <li>Autenticación segura mediante Firebase Authentication.</li>
+        <li>Reglas de acceso en Firestore que impiden que un usuario acceda a datos de otro.</li>
+        <li>Transmisión de datos cifrada mediante HTTPS en todo momento.</li>
+        <li>Las contraseñas nunca se almacenan en texto plano.</li>
+      </ul>
+      <p>
+        Ningún sistema es completamente infalible. Si detectas algún problema de seguridad,
+        te pedimos que nos lo reportes de inmediato a nuestro correo de contacto.
+      </p>
+    </section>
+
+    <!-- 9 -->
+    <section id="s9">
+      <h2><span class="num">9</span> Menores de edad</h2>
+      <p>
+        Esta aplicación está dirigida a personas mayores de <strong>18 años</strong>.
+        No recopilamos de forma intencional datos personales de menores de edad.
+        Si eres padre, madre o tutor y crees que tu hijo ha proporcionado datos sin tu
+        consentimiento, contáctanos para proceder a su eliminación.
+      </p>
+    </section>
+
+    <!-- 10 -->
+    <section id="s10">
+      <h2><span class="num">10</span> Contacto</h2>
+      <p>
+        Para consultas, solicitudes o reclamos relacionados con el tratamiento de
+        tus datos personales:
+      </p>
+      <div class="contact-box">
+        <span class="icon">✉️</span>
+        <div class="info">
+          <span class="label">Correo de contacto</span>
+          <a href="mailto:pabpeluqueria.contacto@gmail.com">pabpeluqueria.contacto@gmail.com</a>
+        </div>
+      </div>
+      <p style="margin-top: 1rem;">
+        También puedes presentar una queja ante la
+        <strong>Superintendencia de Industria y Comercio (SIC)</strong> de Colombia,
+        autoridad de protección de datos personales, en
+        <a href="https://www.sic.gov.co" target="_blank" rel="noopener"
+           style="color: var(--color-accent);">www.sic.gov.co</a>.
+      </p>
+    </section>
+
+    <!-- VERSION BAR -->
+    <div class="version-bar">
+      <span>Versión <strong>v1.0</strong> — vigente desde junio 2025</span>
+      <span>PAB Peluquería &nbsp;·&nbsp; Cali, Colombia 🇨🇴</span>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>
+      © 2025 PAB Peluquería &nbsp;·&nbsp;
+      <a href="https://pab-peluqueria-app.vercel.app/">Volver a la app</a>
+    </p>
+  </footer>
+
+</body>
+</html>
