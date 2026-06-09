@@ -116,7 +116,14 @@ window.handleRegister = async function() {
     await setDoc(doc(db, 'users', cred.user.uid), {
       uid: cred.user.uid,
       name, lastname, email, phone, role,
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
+
+      consentimiento: {
+    aceptado: true,
+    fecha: serverTimestamp(),       
+    version: 'v1.0',              
+    metodo: 'checkbox-registro'     
+  }
     });
 
     // Enviar correo mediante API + Resend
