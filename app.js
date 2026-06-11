@@ -171,6 +171,68 @@ window.handleLogout = async function() {
 };
 
 // ============================================================
+// ELIMINAR CUENTA (CLIENTE)
+// ============================================================
+window.handleDeleteAccount = async function() {
+  const confirm1 = confirm(
+    '¿Estás seguro que deseas eliminar tu cuenta?\n\n' +
+    'Tu cuenta y datos personales serán eliminados de inmediato. ' +
+    'Tu historial de citas será eliminado en 15 días hábiles.'
+  );
+  if (!confirm1) return;
+
+  const confirm2 = confirm(
+    'Esta acción es IRREVERSIBLE.\n\n' +
+    '¿Confirmas que deseas eliminar tu cuenta definitivamente?'
+  );
+  if (!confirm2) return;
+
+  try {
+    const uid = currentUser.uid;
+
+    // 1. Marcar citas para eliminación en 15 días
+    const citasSnap = await getDocs(query(
+      collection(db, 'appointments'),
+      where('userId', '==', uid)
+    ));
+
+    const batch = [];
+    citasSnap.forEach(citaDoc => {
+      const fechaEliminacion = new Date();
+      fechaEliminacion.setDate(fechaEliminacion.getDate() + 15);
+      batch.push(updateDoc(doc(db, 'appointments', citaDoc.id), {
+        eliminacionPendiente: true,
+        fechaEliminacion: fechaEliminacion.toISOString(),
+        usuarioEliminado: uid
+      }));
+    });
+    await Promise.all(batch);
+
+    // 2. Eliminar documento del usuario en Firestore
+    await deleteDoc(doc(db, 'users', uid));
+
+    // 3. Eliminar cuenta en Firebase Authentication
+    await currentUser.delete();
+
+    // 4. Redirigir al landing
+    alert('Tu cuenta ha sido eliminada. Tu historial de citas será eliminado en 15 días hábiles.');
+    showPage('page-landing');
+
+  } catch (e) {
+    // Firebase requiere que el login sea reciente para eliminar la cuenta
+    if (e.code === 'auth/requires-recent-login') {
+      alert(
+        'Por seguridad, debes iniciar sesión nuevamente antes de eliminar tu cuenta.\n\n' +
+        'Cierra sesión, vuelve a iniciar sesión y repite el proceso.'
+      );
+    } else {
+      alert('Error al eliminar la cuenta. Intenta de nuevo.');
+      console.error(e);
+    }
+  }
+};
+
+// ============================================================
 // AGENDAR CITA (CLIENTE)
 // ============================================================
 window.handleBooking = async function() {
@@ -603,10 +665,6 @@ function poblarSelects() {
     if (el) el.innerHTML = `<option value="">Selecciona hora</option>` + opcionesHora;
   });
 }
-
-window.showTermsModal = function() {
-  document.getElementById('modal-terms').style.display = 'flex';
-};
 
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
