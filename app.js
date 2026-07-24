@@ -279,6 +279,7 @@ window.handleBooking = async function() {
       userPhone: currentUserData.phone || '',
       service, date, time, note,
       status: 'confirmada',
+      slotId, 
       createdAt: serverTimestamp()
     };
 
@@ -355,8 +356,26 @@ window.loadUserAppointments = async function() {
 
 window.cancelUserAppointment = async function(id) {
   if (!confirm('¿Cancelar esta cita?')) return;
-  await updateDoc(doc(db, 'appointments', id), { status: 'cancelada' });
-  loadUserAppointments();
+  try {
+    // Primero leemos la cita para saber qué slot le corresponde
+    const apptRef = doc(db, 'appointments', id);
+    const apptSnap = await getDoc(apptRef);
+    if (!apptSnap.exists()) return;
+    const apptData = apptSnap.data();
+
+    // Marcamos la cita como cancelada
+    await updateDoc(apptRef, { status: 'cancelada' });
+
+    // Liberamos el horario para que otros clientes puedan agendarlo
+    if (apptData.slotId) {
+      await deleteDoc(doc(db, 'occupiedSlots', apptData.slotId));
+    }
+
+    loadUserAppointments();
+  } catch (e) {
+    console.error(e);
+    alert('Error al cancelar la cita. Intenta de nuevo.');
+  }
 };
 
 // ============================================================
