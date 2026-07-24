@@ -260,29 +260,17 @@ window.handleBooking = async function() {
     return;
   }
 
-  try {
+ try {
+  // Verificar disponibilidad consultando UN SOLO documento por ID (no una lista con filtros)
+  const slotId = `${date}_${time}`;
+  const slotRef = doc(db, 'occupiedSlots', slotId);
+  const slotSnap = await getDoc(slotRef);
 
-   // Verificar disponibilidad — busca citas pendientes o confirmadas en esa fecha y hora
-const [snapPendiente, snapConfirmada] = await Promise.all([
-  getDocs(query(
-    collection(db, 'appointments'),
-    where('date', '==', date),
-    where('time', '==', time),
-    where('status', '==', 'pendiente')
-  )),
-  getDocs(query(
-    collection(db, 'appointments'),
-    where('date', '==', date),
-    where('time', '==', time),
-    where('status', '==', 'confirmada')
-  ))
-]);
-
-if (!snapPendiente.empty || !snapConfirmada.empty) {
-  errEl.textContent = '⚠️ Esa hora ya está reservada. Por favor elige otra hora.';
-  errEl.style.display = 'block';
-  return;
-}
+  if (slotSnap.exists()) {
+    errEl.textContent = '⚠️ Esa hora ya está reservada. Por favor elige otra hora.';
+    errEl.style.display = 'block';
+    return;
+  }
 
     const apptData = {
       userId: currentUser.uid,
@@ -295,6 +283,9 @@ if (!snapPendiente.empty || !snapConfirmada.empty) {
     };
 
     const docRef = await addDoc(collection(db, 'appointments'), apptData);
+
+     // Marcar el horario como ocupado (documento sin datos personales)
+    await setDoc(slotRef, { date, time, occupied: true });
 
     // Notificar via sendEmail webhook → correo al cliente y al admin
     sendEmail('nueva_cita', {
