@@ -13,15 +13,37 @@ export const SERVICIOS = [
 ];
 
 export const HORARIOS = [
-  "08:00 AM", "08:30 AM",
-  "09:00 AM", "09:30 AM",
-  "10:00 AM", "10:30 AM",
-  "11:00 AM", "11:30 AM",
-  "01:00 PM", "01:30 PM",
-  "02:00 PM", "02:30 PM",
-  "03:00 PM", "03:30 PM",
-  "04:00 PM", "04:30 PM", 
-  "05:00 PM", "05:30 PM", 
-  "06:00 PM", "06:30 PM",
-  "07:00 PM", "07:30 PM",
+  "08:00 AM", "09:00 AM",
+  "09:00 AM", "10:00 AM",
+  "10:00 AM", "11:00 AM",
+  "11:00 AM", "12:00 PM",
+  "13:00 PM", "14:00 PM",
+  "14:00 PM", "15:00 PM",
+  "15:00 PM", "16:00 PM",
+  "16:00 PM", "17:00 PM",
+  "17:00 PM", "18:00 PM",
+  "18:00 PM", "19:00 PM",
+  "19:00 PM", "20:00 PM",
+];
+
+// Cada corte necesita una imagen PNG con FONDO TRANSPARENTE,
+// tomada de frente, para que se pueda superponer sobre la foto del cliente.
+// Guarda estas imágenes en una carpeta /assets/cortes/
+export const CORTES_OVERLAY = [
+  { nombre: "Capas largas", imagen: "assets/cortes/capas-largas.png" },
+  { nombre: "Mariposa", imagen: "assets/cortes/mariposa.png" },
+  { nombre: "Wolf", imagen: "assets/cortes/wolf.png" },
+  { nombre: "Bob recto", imagen: "assets/cortes/bob-recto.png" },
+  { nombre: "Bob a la mandibula", imagen: "assets/cortes/bob-a-la-mandibula.png" },
+  { nombre: "Pixie largo", imagen: "assets/cortes/pixie-largo.png" },
+  { nombre: "Midi con capas internas", imagen: "assets/cortes/midi-capas-internas.png" },
+  { nombre: "Flequillo cortina", imagen: "assets/cortes/flequillo-cortina.png" },
+  { nombre: "Taper fade/Mid fade", imagen: "assets/cortes/taper-fade/mid-fade.png" },
+  { nombre: "French crop", imagen: "assets/cortes/french-crop.png" },
+  { nombre: "Textured quiff", imagen: "assets/cortes/textured-quiff.png" },
+  { nombre: "Flow/Mullet moderno", imagen: "assets/cortes/flow/mullet-moderno.png" },
+  { nombre: "Clásico lateral", imagen: "assets/cortes/clasico-lateral.png" },
+  { nombre: "Pompadour modesto", imagen: "assets/cortes/pompadour-modesto.png" },
+  { nombre: "Quiff corto con textura", imagen: "assets/cortes/quiff-corto-textura.png" },
+  { nombre: "Corto con textura mate", imagen: "assets/cortes/corto-textura-mate.png" },
 ];

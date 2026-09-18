@@ -443,15 +443,55 @@ window.openEditAppointment = function(id) {
 
 window.saveEditAppointment = async function() {
   const id = document.getElementById('edit-appointment-id').value;
-  const data = {
-    service: document.getElementById('edit-service').value,
-    date: document.getElementById('edit-date').value,
-    time: document.getElementById('edit-time').value,
-    status: document.getElementById('edit-status').value,
-    note: document.getElementById('edit-note').value,
-    updatedAt: serverTimestamp()
-  };
-  await updateDoc(doc(db, 'appointments', id), data);
+  const apptRef = doc(db, 'appointments', id);
+
+  try {
+    const apptSnap = await getDoc(apptRef);
+    if (!apptSnap.exists()) return;
+    const oldData = apptSnap.data();
+
+    const newDate = document.getElementById('edit-date').value;
+    const newTime = document.getElementById('edit-time').value;
+    const newStatus = document.getElementById('edit-status').value;
+    const newSlotId = `${newDate}_${newTime}`;
+    // Si la cita vieja no tenía slotId guardado (citas creadas antes de este cambio),
+    // lo reconstruimos con su fecha/hora anterior
+    const oldSlotId = oldData.slotId || `${oldData.date}_${oldData.time}`;
+
+    const data = {
+      service: document.getElementById('edit-service').value,
+      date: newDate,
+      time: newTime,
+      status: newStatus,
+      note: document.getElementById('edit-note').value,
+      slotId: newSlotId,
+      updatedAt: serverTimestamp()
+    };
+
+    await updateDoc(apptRef, data);
+
+    const wasCancelada = oldData.status === 'cancelada';
+    const esCancelada = newStatus === 'cancelada';
+    const cambioHorario = oldData.date !== newDate || oldData.time !== newTime;
+
+    if (esCancelada && !wasCancelada) {
+      // Se canceló ahora: liberar el horario viejo
+      await deleteDoc(doc(db, 'occupiedSlots', oldSlotId)).catch(() => {});
+    } else if (!esCancelada && wasCancelada) {
+      // Se reactivó: ocupar el horario nuevo
+      await setDoc(doc(db, 'occupiedSlots', newSlotId), { date: newDate, time: newTime, occupied: true });
+    } else if (!esCancelada && cambioHorario) {
+      // Se movió de horario sin cancelar: liberar el viejo, ocupar el nuevo
+      await deleteDoc(doc(db, 'occupiedSlots', oldSlotId)).catch(() => {});
+      await setDoc(doc(db, 'occupiedSlots', newSlotId), { date: newDate, time: newTime, occupied: true });
+    }
+    // Si no cambió ni el estado ni el horario, no tocamos occupiedSlots
+
+  } catch (e) {
+    console.error(e);
+    alert('Error al guardar los cambios.');
+  }
+
   closeModal('modal-edit-appointment');
   loadAllAppointments();
 };

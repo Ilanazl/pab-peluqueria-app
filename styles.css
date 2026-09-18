@@ -452,3 +452,65 @@ body {
 .privacy-note a:hover {
   opacity: 0.8;
 }
+
+/* ===== SIMULADOR DE CORTES ===== */
+.cortes-thumbnails {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 12px 0 18px;
+}
+
+.corte-thumb {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  background: white;
+  border: 2px solid var(--warm-beige);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.corte-thumb:hover { border-color: var(--warm-gold); }
+.corte-thumb.selected {
+  border-color: var(--warm-brown);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+#sim-canvas {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 20px;
+  border-radius: var(--radius);
+  border: 2px solid var(--warm-beige);
+  background: var(--warm-cream);
+  touch-action: none; /* evita que el navegador haga scroll al arrastrar en móvil */
+}
+
+.sim-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 480px;
+  margin: 0 auto 20px;
+}
+.sim-controls label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  margin-bottom: 4px;
+  display: block;
+}
+.sim-controls input[type="range"] { width: 100%; }
+
+.sim-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
