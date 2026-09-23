@@ -40,7 +40,7 @@
         </div>
       </section>
       <footer class="footer">
-        <p>© 2025 PAB Peluquería — Cali, Valle del Cauca 🇨🇴</p>
+        <p>© 2026 PAB Peluquería — Cali, Valle del Cauca 🇨🇴</p>
       </footer>
     </div>
 
@@ -164,6 +164,7 @@
         <div id="tab-book" class="tab-content active">
           <div class="book-card">
             <h2>Agenda tu cita</h2>
+            <div id="loyalty-badge" class="loyalty-badge"></div>
             <div id="book-success" class="success-msg" style="display:none"></div>
             <div id="book-error" class="error-msg" style="display:none"></div>
             <div class="form-group">
@@ -190,6 +191,14 @@
   Al confirmar, aceptas que tus datos sean tratados conforme a nuestra
   <a href="/politica-privacidad.html" target="_blank">Política de Privacidad</a>.
 </p>
+
+<div class="form-group" id="reward-checkbox-group" style="display:none">
+  <label class="terms-label">
+    <input type="checkbox" id="book-use-reward"/>
+    🎁 Usar mi corte gratis en esta cita
+  </label>
+</div>
+
             <button class="btn-primary btn-full" onclick="handleBooking()">Confirmar Cita ✓</button>
           </div>
         </div>
@@ -234,6 +243,7 @@
               <option value="">Todos los estados</option>
               <option value="pendiente">Pendiente</option>
               <option value="confirmada">Confirmada</option>
+              <option value="completada">Completada</option>
               <option value="cancelada">Cancelada</option>
             </select>
             <input type="date" id="filter-date" onchange="filterAppointments()" placeholder="Filtrar por fecha"/>
@@ -317,7 +327,9 @@
           <select id="edit-status">
             <option value="pendiente">Pendiente</option>
             <option value="confirmada">Confirmada</option>
+            <option value="completada">Completada</option>
             <option value="cancelada">Cancelada</option>
+
           </select>
         </div>
         <div class="form-group">

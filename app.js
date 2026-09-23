@@ -69,6 +69,7 @@ onAuthStateChanged(auth, async (user) => {
       } else {
         document.getElementById('user-greeting').textContent = `Hola, ${currentUserData.name}!`;
         showPage('page-dashboard');
+        loadLoyaltyStatus();
       }
     }
   } else {
@@ -272,6 +273,8 @@ window.handleBooking = async function() {
     return;
   }
 
+  const usarRecompensa = document.getElementById('book-use-reward')?.checked || false;
+
     const apptData = {
       userId: currentUser.uid,
       userName: `${currentUserData.name} ${currentUserData.lastname}`,
@@ -280,6 +283,7 @@ window.handleBooking = async function() {
       service, date, time, note,
       status: 'confirmada',
       slotId, 
+      esRecompensa: usarRecompensa,
       createdAt: serverTimestamp()
     };
 
@@ -423,6 +427,7 @@ function renderAppointments(appts) {
       <div class="appt-actions">
         <button class="btn-edit" onclick="openEditAppointment('${a.id}')">✏️ Editar</button>
         ${a.status === 'pendiente' ? `<button class="btn-confirm" onclick="confirmAppointment('${a.id}', '${a.userEmail}', '${a.userName}', '${a.service}', '${a.date}', '${a.time}')">✓ Confirmar</button>` : ''}
+        ${a.status === 'confirmada' ? `<button class="btn-confirm" onclick="markAppointmentCompleted('${a.id}')">✓ Completada</button>` : ''}
         <button class="btn-danger" onclick="deleteAppointment('${a.id}')">🗑️</button>
       </div>
     </div>
@@ -507,6 +512,47 @@ window.confirmAppointment = async function(id, email, name, service, date, time)
   });
 
   loadAllAppointments();
+};
+
+window.markAppointmentCompleted = async function(id) {
+  if (!confirm('¿Confirmas que el cliente ya recibió el servicio?')) return;
+
+  try {
+    const apptRef = doc(db, 'appointments', id);
+    const apptSnap = await getDoc(apptRef);
+    if (!apptSnap.exists()) return;
+    const appt = apptSnap.data();
+
+    await updateDoc(apptRef, { status: 'completada' });
+
+    // Citas creadas manualmente por el admin (sin cuenta de cliente) no participan en fidelidad
+    if (appt.userId === 'admin-created') {
+      loadAllAppointments();
+      return;
+    }
+
+    const userRef = doc(db, 'users', appt.userId);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) { loadAllAppointments(); return; }
+    const userData = userSnap.data();
+
+    if (appt.esRecompensa) {
+      // Esta era la cita gratis: se cerró el ciclo, se apaga la recompensa
+      await updateDoc(userRef, { recompensaDisponible: false });
+    } else {
+      const nuevoConteo = (userData.cortesCompletados || 0) + 1;
+      if (nuevoConteo >= 6) {
+        await updateDoc(userRef, { cortesCompletados: 0, recompensaDisponible: true });
+      } else {
+        await updateDoc(userRef, { cortesCompletados: nuevoConteo });
+      }
+    }
+
+    loadAllAppointments();
+  } catch (e) {
+    console.error(e);
+    alert('Error al marcar la cita como completada.');
+  }
 };
 
 window.deleteAppointment = async function(id) {
@@ -690,6 +736,25 @@ function firebaseError(code) {
     'auth/invalid-credential': 'Correo o contraseña incorrectos.',
   };
   return errors[code] || 'Ocurrió un error. Intenta de nuevo.';
+}
+
+async function loadLoyaltyStatus() {
+  const badge = document.getElementById('loyalty-badge');
+  if (!badge || !currentUserData) return;
+
+  const conteo = currentUserData.cortesCompletados || 0;
+  const disponible = currentUserData.recompensaDisponible || false;
+
+  if (disponible) {
+    badge.innerHTML = `🎁 <strong>¡Tienes un corte gratis disponible!</strong> Selecciónalo al agendar tu próxima cita.`;
+    badge.classList.add('reward-ready');
+  } else {
+    const faltan = 6 - conteo;
+    badge.innerHTML = `✂️ Te faltan <strong>${faltan}</strong> corte${faltan === 1 ? '' : 's'} para tu sexto corte gratis (${conteo}/6)`;
+    badge.classList.remove('reward-ready');
+  }
+
+  document.getElementById('reward-checkbox-group').style.display = disponible ? 'block' : 'none';
 }
 
 // Set min date for booking inputs

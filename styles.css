@@ -453,6 +453,22 @@ body {
   opacity: 0.8;
 }
 
+.loyalty-badge {
+  background: var(--warm-beige);
+  border-left: 4px solid var(--warm-gold);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+.loyalty-badge.reward-ready {
+  background: #f0fff4;
+  border-left-color: #28a745;
+  color: #1a7a3a;
+  font-weight: 600;
+}
+
 /* ===== SIMULADOR DE CORTES ===== */
 .cortes-thumbnails {
   display: flex;

@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
               </div>
             </div>
             <div style="background: #6B4226; padding: 20px; text-align: center;">
-              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2025 PAB Peluquería — Cali, Colombia 🇨🇴</p>
+              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2026 PAB Peluquería — Cali, Colombia 🇨🇴</p>
             </div>
           </div>
         `
@@ -91,7 +91,7 @@ module.exports = async (req, res) => {
               <p style="color: #9B7355;">¡Te esperamos! Si necesitas cancelar o cambiar tu cita contáctanos.</p>
             </div>
             <div style="background: #6B4226; padding: 20px; text-align: center;">
-              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2025 PAB Peluquería — Cali, Colombia 🇨🇴</p>
+              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2026 PAB Peluquería — Cali, Colombia 🇨🇴</p>
             </div>
           </div>
         `
@@ -121,7 +121,7 @@ module.exports = async (req, res) => {
               </div>
             </div>
             <div style="background: #6B4226; padding: 20px; text-align: center;">
-              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2025 PAB Peluquería</p>
+              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2026 PAB Peluquería</p>
             </div>
           </div>
         `
@@ -153,7 +153,7 @@ module.exports = async (req, res) => {
               <p style="color: #9B7355;">¡Te esperamos! Si necesitas cancelar contáctanos.</p>
             </div>
             <div style="background: #6B4226; padding: 20px; text-align: center;">
-              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2025 PAB Peluquería — Cali, Colombia 🇨🇴</p>
+              <p style="color: #F5E6D3; margin: 0; font-size: 0.9rem;">© 2026 PAB Peluquería — Cali, Colombia 🇨🇴</p>
             </div>
           </div>
         `
