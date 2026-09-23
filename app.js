@@ -346,6 +346,7 @@ window.loadUserAppointments = async function() {
           <p>📅 ${formatDate(a.date)} — ⏰ ${a.time}</p>
           ${a.note ? `<p>📝 ${a.note}</p>` : ''}
           <span class="status-badge status-${a.status}">${a.status}</span>
+          ${a.esRecompensa ? `<span class="status-badge reward-badge">🎁 Corte gratis</span>` : ''}
         </div>
         <div class="appt-actions">
         ${a.status !== 'cancelada' ? `<button class="btn-danger" onclick="cancelUserAppointment('${a.id}')">Cancelar</button>` : ''}
@@ -423,6 +424,7 @@ function renderAppointments(appts) {
         <p>📧 ${a.userEmail} ${a.userPhone ? '| 📱 ' + a.userPhone : ''}</p>
         ${a.note ? `<p>📝 ${a.note}</p>` : ''}
         <span class="status-badge status-${a.status}">${a.status}</span>
+        ${a.esRecompensa ? `<span class="status-badge reward-badge">🎁 Corte gratis</span>` : ''}
       </div>
       <div class="appt-actions">
         <button class="btn-edit" onclick="openEditAppointment('${a.id}')">✏️ Editar</button>

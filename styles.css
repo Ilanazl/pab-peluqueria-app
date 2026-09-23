@@ -377,6 +377,11 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  .reward-badge {
+  background: #FFF3E0;
+  color: #B8641A;
+  margin-left: 6px;
+}
 }
 .status-pendiente { background: #FFF3CD; color: #856404; }
 .status-confirmada { background: #D4EDDA; color: #155724; }
