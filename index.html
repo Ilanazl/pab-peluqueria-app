@@ -230,6 +230,7 @@
           <button class="tab-btn active" onclick="switchTab('admin-tab-appointments', this)">📅 Citas</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-users', this)">👥 Usuarios</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-new', this)">➕ Nueva Cita</button>
+          <button class="tab-btn" onclick="switchTab('admin-tab-reports', this)">📊 Informes</button>
         </div>
 
         <!-- CITAS ADMIN -->
@@ -301,6 +302,18 @@
         </div>
       </div>
     </div>
+
+
+<!-- INFORMES ADMIN -->
+    <div id="admin-tab-reports" class="tab-content">
+  <div class="appointments-header">
+    <h2>Informes Mensuales</h2>
+    <button class="btn-primary btn-sm" onclick="loadReports()">↻ Actualizar</button>
+  </div>
+  <div id="reports-content">
+    <div class="loading">Cargando informe...</div>
+  </div>
+</div>
 
     <!-- MODAL EDITAR CITA -->
     <div id="modal-edit-appointment" class="modal" style="display:none">

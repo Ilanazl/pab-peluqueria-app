@@ -48,6 +48,7 @@ window.switchTab = function(tabId, btn) {
   if (tabId === 'tab-appointments') loadUserAppointments();
   if (tabId === 'admin-tab-appointments') loadAllAppointments();
   if (tabId === 'admin-tab-users') loadAllUsers();
+  if (tabId === 'admin-tab-reports') loadReports();
 };
 
 window.closeModal = function(id) {
@@ -564,6 +565,76 @@ window.deleteAppointment = async function(id) {
 };
 
 // ============================================================
+//INFORME MENSUAL
+// ============================================================
+
+function getPrecioServicio(nombreServicio) {
+  const servicio = SERVICIOS.find(s => s.nombre === nombreServicio);
+  return servicio ? servicio.precio : 0;
+}
+
+window.loadReports = async function() {
+  const container = document.getElementById('reports-content');
+  container.innerHTML = '<div class="loading">Generando informe...</div>';
+
+  try {
+    const snap = await getDocs(collection(db, 'appointments'));
+    const appts = snap.docs.map(d => d.data());
+    const completadas = appts.filter(a => a.status === 'completada');
+
+    // Agrupar por mes usando "YYYY-MM" como llave (los primeros 7 caracteres de la fecha)
+    const porMes = {};
+    completadas.forEach(a => {
+      const mes = a.date.slice(0, 7);
+      if (!porMes[mes]) porMes[mes] = { cortes: 0, ingresos: 0, gratis: 0 };
+
+      porMes[mes].cortes++;
+      if (a.esRecompensa) {
+        porMes[mes].gratis++;
+      } else {
+        porMes[mes].ingresos += getPrecioServicio(a.service);
+      }
+    });
+
+    const meses = Object.keys(porMes).sort().reverse(); // más reciente primero
+
+    if (meses.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="emoji">📊</div><p>Aún no hay citas completadas para generar informes.</p></div>`;
+      return;
+    }
+
+    const nombresMes = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+    container.innerHTML = meses.map(mes => {
+      const data = porMes[mes];
+      const [anio, mesNum] = mes.split('-');
+      return `
+        <div class="report-card">
+          <h3>${nombresMes[parseInt(mesNum) - 1]} ${anio}</h3>
+          <div class="report-stats">
+            <div class="report-stat">
+              <span class="report-number">${data.cortes}</span>
+              <span class="report-label">Cortes realizados</span>
+            </div>
+            <div class="report-stat">
+              <span class="report-number">$${data.ingresos.toLocaleString('es-CO')}</span>
+              <span class="report-label">Ingresos</span>
+            </div>
+            <div class="report-stat">
+              <span class="report-number">${data.gratis}</span>
+              <span class="report-label">Cortes gratis (fidelidad)</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="loading">Error al generar el informe.</div>';
+    console.error(e);
+  }
+};
+
+// ============================================================
 // ADMIN - CARGAR USUARIOS
 // ============================================================
 window.loadAllUsers = async function() {
@@ -573,6 +644,14 @@ window.loadAllUsers = async function() {
   try {
     const snap = await getDocs(collection(db, 'users'));
     allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+     // Contar cuántas citas ha agendado cada usuario (todas, sin importar el estado)
+    const apptsSnap = await getDocs(collection(db, 'appointments'));
+    const conteoPorUsuario = {};
+    apptsSnap.forEach(docSnap => {
+      const uid = docSnap.data().userId;
+      conteoPorUsuario[uid] = (conteoPorUsuario[uid] || 0) + 1;
+    });
 
     if (allUsers.length === 0) {
       container.innerHTML = `<div class="empty-state"><div class="emoji">👥</div><p>No hay usuarios registrados aún.</p></div>`;
@@ -585,6 +664,7 @@ window.loadAllUsers = async function() {
         <div class="user-info">
           <h4>${u.name} ${u.lastname || ''} ${u.role === 'admin' ? '👑' : ''}</h4>
           <p>📧 ${u.email} ${u.phone ? '| 📱 ' + u.phone : ''}</p>
+          <p>Citas agendadas: ${conteoPorUsuario[u.id] || 0}</p>
           <p>Registrado: ${u.createdAt ? new Date(u.createdAt.seconds * 1000).toLocaleDateString('es-CO') : 'N/A'}</p>
         </div>
         <div class="user-actions">

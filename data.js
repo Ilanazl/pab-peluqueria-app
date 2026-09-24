@@ -39,8 +39,5 @@ export const CORTES_OVERLAY = [
   { nombre: "French crop", imagen: "assets/cortes/french-crop.png" },
   { nombre: "Textured quiff", imagen: "assets/cortes/textured-quiff.png" },
   { nombre: "Mullet moderno", imagen: "assets/cortes/mullet-moderno.png" },
-  { nombre: "Clásico lateral", imagen: "assets/cortes/clasico-lateral.png" },
-  { nombre: "Pompadour modesto", imagen: "assets/cortes/pompadour-modesto.png" },
-  { nombre: "Quiff corto con textura", imagen: "assets/cortes/quiff-corto-textura.png" },
-  { nombre: "Corto con textura mate", imagen: "assets/cortes/corto-textura-mate.png" },
+  
 ];

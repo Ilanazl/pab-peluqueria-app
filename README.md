@@ -96,7 +96,7 @@ Te esperamos en PAB Peluquería.
 
 1. Abre tu página web
 2. Haz clic en **Registrarse**
-3. Regístrate con el correo `izplopz@gmail.com`
+3. Regístrate con el correo `admin`
 4. Firebase detectará que es el admin y te mostrará el panel de administración
 
 ---

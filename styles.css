@@ -535,3 +535,37 @@ body {
   justify-content: center;
   flex-wrap: wrap;
 }
+
+/* ===== INFORMES ===== */
+.report-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--warm-gold);
+}
+.report-card h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--warm-brown-dark);
+  margin-bottom: 16px;
+  text-transform: capitalize;
+}
+.report-stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.report-stat { text-align: center; }
+.report-number {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--warm-brown-dark);
+}
+.report-label {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
