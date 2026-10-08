@@ -46,3 +46,12 @@ export const db = getFirestore(app);
 
 // ADMIN EMAIL - El usuario con este correo tendrá acceso al panel admin
 export const ADMIN_EMAIL = "izplopz@gmail.com";
+
+export const GOOGLE_HOLIDAYS_CALENDAR_ID =
+  "es.co#holiday@group.v.calendar.google.com";
+
+export const GOOGLE_CLOSURES_CALENDAR_ID =
+  "8e8c95478d9f43bc06fc02274b27a85fef35b76459faefee5a9c293415fb0451@group.calendar.google.com";
+
+export const GOOGLE_CALENDAR_API_KEY =
+  "AIzaSyBXzkzeOzg-49IhUWdYitQTWXouo2ysDbg";

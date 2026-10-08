@@ -227,14 +227,24 @@
       </nav>
       <div class="admin-container">
         <div class="dashboard-tabs">
-          <button class="tab-btn active" onclick="switchTab('admin-tab-appointments', this)">📅 Citas</button>
+          <button class="tab-btn active" onclick="switchTab('admin-tab-dashboard', this)">📈 Dashboard</button>
+          <button class="tab-btn" onclick="switchTab('admin-tab-appointments', this)">📅 Citas</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-users', this)">👥 Usuarios</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-new', this)">➕ Nueva Cita</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-reports', this)">📊 Informes</button>
         </div>
 
+        <!-- DASHBOARD ADMIN -->
+        <div id="admin-tab-dashboard" class="tab-content active">
+          <div class="appointments-header dashboard-heading">
+            <div><p class="dashboard-eyebrow">PAB PELUQUERÍA · RESUMEN</p><h2>Dashboard</h2><p class="dashboard-subtitle">Seguimiento semanal de servicios completados.</p></div>
+            <div class="dashboard-week-picker"><label for="dashboard-week">Semana de</label><input type="date" id="dashboard-week" onchange="loadDashboard()"/></div>
+          </div>
+          <div id="dashboard-content"><div class="loading">Cargando dashboard...</div></div>
+        </div>
+
         <!-- CITAS ADMIN -->
-        <div id="admin-tab-appointments" class="tab-content active">
+        <div id="admin-tab-appointments" class="tab-content">
           <div class="appointments-header">
             <h2>Todas las Citas</h2>
             <button class="btn-primary btn-sm" onclick="loadAllAppointments()">↻ Actualizar</button>
@@ -300,11 +310,7 @@
             <button class="btn-primary btn-full" onclick="handleAdminBooking()">Crear Cita</button>
           </div>
         </div>
-      </div>
-    </div>
-
-
-<!-- INFORMES ADMIN -->
+        <!-- INFORMES ADMIN -->
     <div id="admin-tab-reports" class="tab-content">
   <div class="appointments-header">
     <h2>Informes Mensuales</h2>
@@ -314,6 +320,8 @@
     <div class="loading">Cargando informe...</div>
   </div>
 </div>
+      </div>
+    </div>
 
     <!-- MODAL EDITAR CITA -->
     <div id="modal-edit-appointment" class="modal" style="display:none">

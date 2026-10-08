@@ -309,6 +309,7 @@ body {
   margin: 40px auto;
   padding: 0 20px;
 }
+.admin-container { max-width: 1180px; }
 
 .dashboard-tabs {
   display: flex;
@@ -537,6 +538,54 @@ body {
 }
 
 /* ===== INFORMES ===== */
+.dashboard-heading { align-items: flex-end; margin: 8px 0 26px; }
+.dashboard-eyebrow { color: var(--warm-gold); font-size: .72rem; font-weight: 700; letter-spacing: .14em; margin-bottom: 5px; }
+.dashboard-heading h2 { margin-bottom: 4px; }
+.dashboard-subtitle { color: var(--text-light); font-size: .9rem; }
+.dashboard-week-picker { display: grid; gap: 6px; color: var(--text-mid); font-size: .82rem; font-weight: 600; }
+.dashboard-week-picker input { padding: 10px 12px; border: 1px solid var(--warm-beige); border-radius: var(--radius-sm); font: inherit; color: var(--text-dark); background: white; }
+.dashboard-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.dashboard-stat, .dashboard-panel { background: white; border: 1px solid rgba(139,94,60,.08); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.dashboard-stat { min-height: 155px; padding: 20px; display: flex; flex-direction: column; align-items: flex-start; }
+.stat-icon { color: var(--warm-gold); font-size: 1.15rem; margin-bottom: 12px; }
+.stat-label { color: var(--text-light); font-size: .82rem; }
+.dashboard-stat strong { color: var(--warm-brown-dark); font-size: 1.65rem; margin: 3px 0; }
+.dashboard-stat small { color: var(--text-light); font-size: .72rem; }
+.dashboard-panel { padding: 22px 24px; margin-bottom: 18px; }
+.dashboard-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.dashboard-panel-heading h3 { color: var(--warm-brown-dark); font-size: 1.08rem; margin-bottom: 4px; }
+.dashboard-panel-heading p { color: var(--text-light); font-size: .8rem; }
+.dashboard-period { color: var(--text-mid); font-size: .78rem; background: var(--warm-cream); border-radius: 99px; padding: 7px 11px; white-space: nowrap; }
+.weekly-chart { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; min-height: 190px; padding: 8px 5px 0; }
+.chart-column { display: flex; flex-direction: column; align-items: center; gap: 7px; min-width: 0; }
+.chart-value { color: var(--text-mid); font-size: .8rem; font-weight: 700; }
+.chart-track { height: 130px; width: min(100%, 56px); display: flex; align-items: flex-end; background: #faf5ef; border-radius: 8px 8px 3px 3px; overflow: hidden; }
+.chart-bar { width: 100%; min-height: 4px; background: #d8b98d; border-radius: 7px 7px 2px 2px; transition: height .3s ease; }
+.chart-bar-active { background: var(--warm-brown); }
+.chart-label { color: var(--text-light); font-size: .72rem; white-space: nowrap; }
+.service-breakdown { display: grid; gap: 14px; }
+.service-row { display: grid; grid-template-columns: minmax(100px, 1fr) minmax(100px, 2fr) 28px; align-items: center; gap: 14px; color: var(--text-mid); font-size: .84rem; }
+.service-row strong { color: var(--warm-brown-dark); text-align: right; }
+.service-track { height: 8px; background: #f5eee6; border-radius: 99px; overflow: hidden; }
+.service-track div { height: 100%; background: var(--warm-gold); border-radius: inherit; }
+.dashboard-empty-inline { color: var(--text-light); padding: 8px 0; font-size: .88rem; }
+.dashboard-table-wrap { width: 100%; overflow-x: auto; }
+.dashboard-table { width: 100%; border-collapse: collapse; text-align: left; font-size: .82rem; }
+.dashboard-table th { color: var(--text-light); font-size: .72rem; font-weight: 600; padding: 11px 12px; border-bottom: 1px solid var(--warm-beige); white-space: nowrap; }
+.dashboard-table td { color: var(--text-mid); padding: 13px 12px; border-bottom: 1px solid #f5eee6; vertical-align: middle; }
+.dashboard-table tbody tr:last-child td { border-bottom: 0; }
+.dashboard-table td strong, .dashboard-table td small { display: block; }
+.dashboard-table td small { color: var(--text-light); font-size: .73rem; margin-top: 3px; }
+.dashboard-type, .dashboard-status { display: inline-block; border-radius: 99px; background: #f6f0e8; color: var(--text-mid); padding: 4px 9px; font-size: .7rem; white-space: nowrap; }
+.type-reward { background: #fff3e0; color: #a65b16; }
+.dashboard-status { background: #e8f4eb; color: #28663b; }
+.dashboard-status-pendiente { background: #fff3cd; color: #856404; }
+.dashboard-status-confirmada { background: #d4edda; color: #155724; }
+.dashboard-status-completada { background: #e8f4eb; color: #28663b; }
+.dashboard-status-cancelada { background: #f8d7da; color: #721c24; }
+.dashboard-filters { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.dashboard-filters label { display: grid; gap: 6px; color: var(--text-mid); font-size: .8rem; font-weight: 600; }
+.dashboard-filters select { min-width: 180px; padding: 9px 12px; border: 1px solid var(--warm-beige); border-radius: var(--radius-sm); background: white; color: var(--text-dark); font: inherit; }
 .report-card {
   background: white;
   border-radius: var(--radius);
@@ -568,4 +617,22 @@ body {
   font-size: 0.8rem;
   color: var(--text-light);
   font-weight: 500;
+}
+
+@media (max-width: 700px) {
+  .admin-container { padding: 0 12px; margin-top: 22px; }
+  .dashboard-tabs { overflow-x: auto; }
+  .dashboard-tabs .tab-btn { flex: 0 0 auto; white-space: nowrap; }
+  .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .dashboard-stat { padding: 14px; min-height: 138px; }
+  .dashboard-stat strong { font-size: 1.35rem; }
+  .dashboard-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .dashboard-panel { padding: 17px 14px; }
+  .dashboard-panel-heading { align-items: flex-start; flex-direction: column; }
+  .weekly-chart { gap: 8px; }
+  .chart-track { height: 105px; }
+  .chart-label { font-size: .63rem; }
+  .service-row { grid-template-columns: minmax(80px, 1fr) minmax(50px, 1.2fr) 20px; gap: 9px; font-size: .75rem; }
+  .dashboard-filters { align-items: stretch; flex-direction: column; }
+  .dashboard-filters select { width: 100%; }
 }

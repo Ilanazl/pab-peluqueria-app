@@ -49,6 +49,7 @@ window.switchTab = function(tabId, btn) {
   if (tabId === 'admin-tab-appointments') loadAllAppointments();
   if (tabId === 'admin-tab-users') loadAllUsers();
   if (tabId === 'admin-tab-reports') loadReports();
+  if (tabId === 'admin-tab-dashboard') loadDashboard();
 };
 
 window.closeModal = function(id) {
@@ -67,6 +68,7 @@ onAuthStateChanged(auth, async (user) => {
       if (currentUserData.role === 'admin') {
         showPage('page-admin');
         loadAllAppointments();
+        loadDashboard();
       } else {
         document.getElementById('user-greeting').textContent = `Hola, ${currentUserData.name}!`;
         showPage('page-dashboard');
@@ -303,7 +305,7 @@ window.handleBooking = async function() {
       adminEmail: ADMIN_EMAIL
     });
 
-    sucEl.textContent = `✅ ¡Cita agendada! ${service} el ${formatDate(date)} a las ${time}. Recibirás confirmación por correo.`;
+    sucEl.textContent = `✅ ¡Cita agendada! ${service} el ${formatDate(date)} a las ${time}.`;
     sucEl.style.display = 'block';
 
     // Limpiar formulario
@@ -567,6 +569,140 @@ window.deleteAppointment = async function(id) {
 // ============================================================
 //INFORME MENSUAL
 // ============================================================
+
+function startOfWeek(date) {
+  const monday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  return monday;
+}
+
+function dateKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+}
+
+window.loadDashboard = async function() {
+  const container = document.getElementById('dashboard-content');
+  if (!container) return;
+  container.innerHTML = '<div class="loading">Cargando dashboard...</div>';
+
+  try {
+    const snapshot = await getDocs(collection(db, 'appointments'));
+    const citas = snapshot.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(cita => cita.date);
+
+    const selector = document.getElementById('dashboard-week');
+    if (!selector.value) selector.value = dateKey(new Date());
+
+    const inicioSemana = startOfWeek(new Date(`${selector.value}T12:00:00`));
+    const finSemana = new Date(inicioSemana);
+    finSemana.setDate(finSemana.getDate() + 6);
+    const inicio = dateKey(inicioSemana);
+    const fin = dateKey(finSemana);
+    const citasSemana = citas.filter(cita => cita.date >= inicio && cita.date <= fin);
+    const completadas = citasSemana.filter(cita => cita.status === 'completada');
+    const agendadas = citasSemana.filter(cita => cita.status === 'pendiente');
+    const confirmadas = citasSemana.filter(cita => cita.status === 'confirmada');
+    const todasCompletadas = citas.filter(cita => cita.status === 'completada');
+
+    const semanas = Array.from({ length: 6 }, (_, index) => {
+      const semanaInicio = new Date(inicioSemana);
+      semanaInicio.setDate(semanaInicio.getDate() - (5 - index) * 7);
+      const semanaFin = new Date(semanaInicio);
+      semanaFin.setDate(semanaFin.getDate() + 6);
+      const llave = dateKey(semanaInicio);
+      const total = todasCompletadas.filter(
+        cita => cita.date >= llave && cita.date <= dateKey(semanaFin)
+      ).length;
+      return { llave, inicio: semanaInicio, total };
+    });
+
+    const maximo = Math.max(1, ...semanas.map(semana => semana.total));
+    const ingresos = completadas.reduce(
+      (total, cita) => total + (cita.esRecompensa ? 0 : getPrecioServicio(cita.service)),
+      0
+    );
+    const cortesGratis = completadas.filter(cita => cita.esRecompensa).length;
+    const servicios = Object.entries(completadas.reduce((conteo, cita) => {
+      const nombre = cita.service || 'Servicio';
+      conteo[nombre] = (conteo[nombre] || 0) + 1;
+      return conteo;
+    }, {})).sort((a, b) => b[1] - a[1]);
+
+    const renderDashboard = (estadoFiltro = 'todos', servicioFiltro = 'todos') => {
+      const citasFiltradas = citasSemana.filter(cita =>
+        (estadoFiltro === 'todos' || cita.status === estadoFiltro) &&
+        (servicioFiltro === 'todos' || cita.service === servicioFiltro)
+      );
+      const nombresEstado = {
+        pendiente: 'Agendada',
+        confirmada: 'Confirmada',
+        completada: 'Completada',
+        cancelada: 'Cancelada'
+      };
+
+      container.innerHTML = `
+        <div class="dashboard-stats">
+          <article class="dashboard-stat"><span class="stat-icon">📅</span><span class="stat-label">Citas agendadas</span><strong>${agendadas.length}</strong><small>Esperando confirmación</small></article>
+          <article class="dashboard-stat"><span class="stat-icon">✅</span><span class="stat-label">Citas confirmadas</span><strong>${confirmadas.length}</strong><small>En la semana seleccionada</small></article>
+          <article class="dashboard-stat"><span class="stat-icon">✂</span><span class="stat-label">Citas realizadas</span><strong>${completadas.length}</strong><small>${cortesGratis} corte(s) gratis de fidelidad</small></article>
+          <article class="dashboard-stat"><span class="stat-icon">💰</span><span class="stat-label">Ingresos realizados</span><strong>$${ingresos.toLocaleString('es-CO')}</strong><small>Según tarifa del servicio</small></article>
+        </div>
+
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-heading"><div><h3>Actividad semanal</h3><p>Citas completadas por semana · últimas 6 semanas</p></div><span class="dashboard-period">${formatDate(inicio)} — ${formatDate(fin)}</span></div>
+          <div class="weekly-chart" role="img" aria-label="Citas completadas por semana">
+            ${semanas.map(semana => `<div class="chart-column"><span class="chart-value">${semana.total}</span><div class="chart-track"><div class="chart-bar ${semana.llave === inicio ? 'chart-bar-active' : ''}" style="height:${Math.max(semana.total ? 12 : 4, semana.total / maximo * 100)}%"></div></div><span class="chart-label">${semana.inicio.toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}</span></div>`).join('')}
+          </div>
+        </section>
+
+        <section class="dashboard-panel">
+          <div class="dashboard-panel-heading"><div><h3>Servicios completados</h3><p>Distribución de cortes y servicios realizados</p></div></div>
+          ${servicios.length
+            ? `<div class="service-breakdown">${servicios.map(([nombre, cantidad]) => `<div class="service-row"><span>${escapeHtml(nombre)}</span><div class="service-track"><div style="width:${cantidad / completadas.length * 100}%"></div></div><strong>${cantidad}</strong></div>`).join('')}</div>`
+            : '<p class="dashboard-empty-inline">Todavía no hay servicios completados en esta semana.</p>'}
+        </section>
+
+        <section class="dashboard-panel dashboard-table-panel">
+          <div class="dashboard-panel-heading"><div><h3>Citas de la semana</h3><p id="dashboard-results-count">${citasFiltradas.length} cita(s)</p></div></div>
+          <div class="dashboard-filters">
+            <label>Estado<select id="dashboard-status-filter">
+              <option value="todos" ${estadoFiltro === 'todos' ? 'selected' : ''}>Todos los estados</option>
+              <option value="pendiente" ${estadoFiltro === 'pendiente' ? 'selected' : ''}>Agendadas</option>
+              <option value="confirmada" ${estadoFiltro === 'confirmada' ? 'selected' : ''}>Confirmadas</option>
+              <option value="completada" ${estadoFiltro === 'completada' ? 'selected' : ''}>Completadas</option>
+              <option value="cancelada" ${estadoFiltro === 'cancelada' ? 'selected' : ''}>Canceladas</option>
+            </select></label>
+            <label>Servicio<select id="dashboard-service-filter">
+              <option value="todos">Todos los servicios</option>
+              ${[...new Set(citasSemana.map(cita => cita.service).filter(Boolean))].map(servicio => `<option value="${escapeHtml(servicio)}" ${servicioFiltro === servicio ? 'selected' : ''}>${escapeHtml(servicio)}</option>`).join('')}
+            </select></label>
+            <button type="button" class="btn-ghost btn-sm" id="dashboard-reset-filters">Limpiar filtros</button>
+          </div>
+          <div id="dashboard-table-results">
+            ${citasFiltradas.length
+              ? `<div class="dashboard-table-wrap"><table class="dashboard-table"><thead><tr><th>Fecha y hora</th><th>Cliente</th><th>Servicio</th><th>Valor</th><th>Estado</th></tr></thead><tbody>${citasFiltradas.slice().sort((a, b) => a.date.localeCompare(b.date) || String(a.time || '').localeCompare(String(b.time || ''))).map(cita => `<tr><td><strong>${formatDate(cita.date)}</strong><small>${escapeHtml(cita.time || '—')}</small></td><td><strong>${escapeHtml(cita.userName || 'Cliente')}</strong><small>${escapeHtml(cita.userEmail || '')}</small></td><td>${escapeHtml(cita.service || 'Servicio')}</td><td>${cita.esRecompensa ? 'Gratis' : `$${getPrecioServicio(cita.service).toLocaleString('es-CO')}`}</td><td><span class="dashboard-status dashboard-status-${escapeHtml(cita.status || '')}">${nombresEstado[cita.status] || escapeHtml(cita.status || 'Sin estado')}</span></td></tr>`).join('')}</tbody></table></div>`
+              : '<div class="empty-state"><p>No hay citas con estos filtros.</p></div>'}
+          </div>
+        </section>`;
+
+      const estadoSelect = document.getElementById('dashboard-status-filter');
+      const servicioSelect = document.getElementById('dashboard-service-filter');
+      estadoSelect.addEventListener('change', () => renderDashboard(estadoSelect.value, servicioSelect.value));
+      servicioSelect.addEventListener('change', () => renderDashboard(estadoSelect.value, servicioSelect.value));
+      document.getElementById('dashboard-reset-filters').addEventListener('click', () => renderDashboard());
+    };
+
+    renderDashboard();
+  } catch (error) {
+    container.innerHTML = '<div class="loading">No se pudo cargar el dashboard. Intenta actualizarlo.</div>';
+    console.error('Error al cargar dashboard:', error);
+  }
+};
 
 function getPrecioServicio(nombreServicio) {
   const servicio = SERVICIOS.find(s => s.nombre === nombreServicio);
