@@ -175,7 +175,8 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Fecha</label>
-                <input type="date" id="book-date"/>
+                <input type="date" id="book-date" onchange="checkBookingDate('book-date')"/>
+                <p id="book-date-availability" class="date-availability" style="display:none"></p>
               </div>
               <div class="form-group">
                 <label>Hora</label>
@@ -231,6 +232,7 @@
           <button class="tab-btn" onclick="switchTab('admin-tab-appointments', this)">📅 Citas</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-users', this)">👥 Usuarios</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-new', this)">➕ Nueva Cita</button>
+          <button class="tab-btn" onclick="switchTab('admin-tab-closures', this)">🗓️ Días sin servicio</button>
           <button class="tab-btn" onclick="switchTab('admin-tab-reports', this)">📊 Informes</button>
         </div>
 
@@ -296,7 +298,8 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Fecha</label>
-                <input type="date" id="admin-book-date"/>
+                <input type="date" id="admin-book-date" onchange="checkBookingDate('admin-book-date')"/>
+                <p id="admin-book-date-availability" class="date-availability" style="display:none"></p>
               </div>
               <div class="form-group">
                 <label>Hora</label>
@@ -309,6 +312,37 @@
             </div>
             <button class="btn-primary btn-full" onclick="handleAdminBooking()">Crear Cita</button>
           </div>
+        </div>
+        <!-- CIERRES Y FESTIVOS -->
+        <div id="admin-tab-closures" class="tab-content">
+          <div class="appointments-header">
+            <div><h2>Días sin servicio</h2><p class="dashboard-subtitle">Los domingos se bloquean automáticamente.</p></div>
+            <button class="btn-primary btn-sm" onclick="loadBusinessClosuresAdmin()">↻ Actualizar</button>
+          </div>
+          <section class="dashboard-panel calendar-setup-panel">
+            <h3>Google Calendar</h3>
+            <div id="google-calendar-connection"></div>
+            <p>PAB consulta el calendario público de festivos colombianos de Google. También puedes añadir fechas especiales directamente desde este panel. No necesitas publicar tu calendario personal.</p>
+            <ol>
+              <li>En Google Cloud activa Google Calendar API y crea una clave restringida a tu dominio y a esa API.</li>
+              <li>Pega la clave en <code>firebase-config.js</code>. El ID del calendario colombiano ya viene configurado.</li>
+              <li>Opcional: configura un segundo calendario público, separado, para leer otros cierres desde Google.</li>
+            </ol>
+          </section>
+          <section class="dashboard-panel">
+            <h3>Agregar cierre manual en PAB</h3>
+            <p class="dashboard-subtitle">Estos cierres se guardan en Firebase y se aplican al calendario de reservas.</p>
+            <div id="closure-message" class="success-msg" style="display:none"></div>
+            <div class="closure-form">
+              <label>Fecha<input type="date" id="closure-date"/></label>
+              <label>Motivo<input type="text" id="closure-reason" maxlength="120" placeholder="Ej. Vacaciones, mantenimiento"/></label>
+              <button class="btn-primary" type="button" onclick="saveBusinessClosure()">Guardar cierre</button>
+            </div>
+          </section>
+          <section class="dashboard-panel">
+            <div class="dashboard-panel-heading"><div><h3>Cierres agregados en PAB</h3><p>Selecciona eliminar para volver a habilitar una fecha.</p></div></div>
+            <div id="business-closures-list"><div class="loading">Cargando cierres...</div></div>
+          </section>
         </div>
         <!-- INFORMES ADMIN -->
     <div id="admin-tab-reports" class="tab-content">

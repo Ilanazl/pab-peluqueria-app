@@ -2,7 +2,11 @@
 // APP.JS - PAB PELUQUERÍA - Lógica principal
 // ============================================================
 
-import { auth, db, ADMIN_EMAIL } from "./firebase-config.js";
+import {
+  auth, db, ADMIN_EMAIL,
+  GOOGLE_HOLIDAYS_CALENDAR_ID, GOOGLE_CLOSURES_CALENDAR_ID,
+  GOOGLE_CALENDAR_API_KEY
+} from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -23,6 +27,9 @@ let currentUser = null;
 let currentUserData = null;
 let allAppointments = [];
 let allUsers = [];
+let businessClosuresCache = null;
+let businessClosuresCacheTime = 0;
+const googleClosuresByYear = new Map();
 
 // ============================================================
 // NAVEGACIÓN
@@ -50,6 +57,7 @@ window.switchTab = function(tabId, btn) {
   if (tabId === 'admin-tab-users') loadAllUsers();
   if (tabId === 'admin-tab-reports') loadReports();
   if (tabId === 'admin-tab-dashboard') loadDashboard();
+  if (tabId === 'admin-tab-closures') loadBusinessClosuresAdmin();
 };
 
 window.closeModal = function(id) {
@@ -239,6 +247,182 @@ window.handleDeleteAccount = async function() {
 // ============================================================
 // AGENDAR CITA (CLIENTE)
 // ============================================================
+async function getBusinessClosures() {
+  const now = Date.now();
+  if (businessClosuresCache && now - businessClosuresCacheTime < 5 * 60 * 1000) {
+    return businessClosuresCache;
+  }
+  const snapshot = await getDocs(collection(db, 'businessClosures'));
+  businessClosuresCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  businessClosuresCacheTime = now;
+  return businessClosuresCache;
+}
+
+async function getGoogleClosures(year) {
+  if (!GOOGLE_CALENDAR_API_KEY) return [];
+  if (googleClosuresByYear.has(year)) return googleClosuresByYear.get(year);
+  const events = [];
+  const calendarIds = [...new Set([
+    GOOGLE_HOLIDAYS_CALENDAR_ID,
+    GOOGLE_CLOSURES_CALENDAR_ID
+  ].filter(Boolean))];
+
+  for (const calendarId of calendarIds) {
+    const params = new URLSearchParams({
+      key: GOOGLE_CALENDAR_API_KEY,
+      singleEvents: 'true',
+      orderBy: 'startTime',
+      maxResults: '2500',
+      timeMin: `${year}-01-01T00:00:00-05:00`,
+      timeMax: `${year + 1}-01-01T00:00:00-05:00`
+    });
+    let pageToken = '';
+    do {
+      if (pageToken) params.set('pageToken', pageToken);
+      const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?${params}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Google Calendar respondió ${response.status}`);
+      const result = await response.json();
+      events.push(...(result.items || []));
+      pageToken = result.nextPageToken || '';
+    } while (pageToken);
+  }
+
+  const holidayDates = events.map(event => ({
+    date: event.start?.date || event.start?.dateTime?.slice(0, 10),
+    reason: event.summary || 'Cierre registrado en Google Calendar'
+  })).filter(event => event.date);
+  googleClosuresByYear.set(year, holidayDates);
+  return holidayDates;
+}
+
+async function getUnavailableDateReason(date) {
+  if (!date) return null;
+  const localDate = new Date(`${date}T12:00:00`);
+  if (localDate.getDay() === 0) return 'No hay servicio los domingos.';
+
+  const closures = await getBusinessClosures();
+  const manualClosure = closures.find(closure => closure.date === date);
+  if (manualClosure) return manualClosure.reason || 'No hay servicio en la fecha seleccionada.';
+
+  try {
+    const googleClosure = (await getGoogleClosures(localDate.getFullYear()))
+      .find(event => event.date === date);
+    if (googleClosure) return googleClosure.reason || 'No hay servicio en esta fecha.';
+  } catch (error) {
+    console.error('No se pudo consultar Google Calendar:', error);
+    return 'No pudimos verificar el calendario de festivos. Intenta de nuevo antes de agendar.';
+  }
+  return null;
+}
+
+window.checkBookingDate = async function(inputId) {
+  const input = document.getElementById(inputId);
+  const message = document.getElementById(`${inputId}-availability`);
+  if (!input) return;
+  input.setCustomValidity('');
+  if (message) {
+    message.textContent = '';
+    message.style.display = 'none';
+  }
+  if (!input.value) return;
+
+  try {
+    const reason = await getUnavailableDateReason(input.value);
+    if (reason) {
+      input.setCustomValidity(reason);
+      if (message) {
+        message.textContent = reason;
+        message.style.display = 'block';
+      }
+    }
+  } catch (error) {
+    console.error('No se pudo validar el día seleccionado:', error);
+    const reason = 'No se pudo verificar la disponibilidad. Intenta de nuevo.';
+    input.setCustomValidity(reason);
+    if (message) {
+      message.textContent = reason;
+      message.style.display = 'block';
+    }
+  }
+};
+
+window.loadBusinessClosuresAdmin = async function() {
+  const list = document.getElementById('business-closures-list');
+  const connection = document.getElementById('google-calendar-connection');
+  if (!list) return;
+  if (connection) {
+    connection.innerHTML = GOOGLE_CALENDAR_API_KEY
+      ? `<span class="calendar-connection-ok">Lectura de festivos activada</span><p>Google Calendar: ${escapeHtml(GOOGLE_HOLIDAYS_CALENDAR_ID)}${GOOGLE_CLOSURES_CALENDAR_ID ? `<br>Cierres adicionales: ${escapeHtml(GOOGLE_CLOSURES_CALENDAR_ID)}` : ''}</p>`
+      : '<span class="calendar-connection-pending">Festivos de Google pendientes de activar</span><p>El calendario de festivos de Colombia ya está configurado. Agrega una clave de Google Calendar API en firebase-config.js para activarlo. Los cierres manuales de PAB funcionan mientras tanto.</p>';
+  }
+  list.innerHTML = '<div class="loading">Cargando cierres...</div>';
+  try {
+    const closures = await getBusinessClosures();
+    closures.sort((a, b) => a.date.localeCompare(b.date));
+    list.innerHTML = closures.length
+      ? closures.map(closure => `<div class="closure-row"><div><strong>${formatDate(closure.date)}</strong><p>${escapeHtml(closure.reason || 'Día sin servicio')}</p></div><button class="btn-danger btn-sm" onclick="deleteBusinessClosure('${escapeHtml(closure.id)}')">Eliminar</button></div>`).join('')
+      : '<div class="empty-state"><p>No hay cierres manuales registrados.</p></div>';
+  } catch (error) {
+    list.innerHTML = '<div class="loading">No se pudieron cargar los cierres.</div>';
+    console.error(error);
+  }
+};
+
+window.saveBusinessClosure = async function() {
+  const dateInput = document.getElementById('closure-date');
+  const reasonInput = document.getElementById('closure-reason');
+  const message = document.getElementById('closure-message');
+  const date = dateInput.value;
+  const reason = reasonInput.value.trim();
+  message.style.display = 'none';
+  if (!date || !reason) {
+    message.textContent = 'Indica la fecha y el motivo del cierre.';
+    message.className = 'error-msg';
+    message.style.display = 'block';
+    return;
+  }
+  if (new Date(`${date}T12:00:00`).getDay() === 0) {
+    message.textContent = 'Los domingos ya se bloquean automáticamente.';
+    message.className = 'error-msg';
+    message.style.display = 'block';
+    return;
+  }
+  try {
+    await setDoc(doc(db, 'businessClosures', date), {
+      date,
+      reason,
+      source: 'admin',
+      updatedAt: serverTimestamp(),
+      updatedBy: currentUser.uid
+    });
+    businessClosuresCache = null;
+    dateInput.value = '';
+    reasonInput.value = '';
+    message.textContent = 'Cierre guardado. Esa fecha ya no estará disponible para reservar.';
+    message.className = 'success-msg';
+    message.style.display = 'block';
+    await loadBusinessClosuresAdmin();
+  } catch (error) {
+    console.error(error);
+    message.textContent = 'No se pudo guardar. Verifica las reglas de Firestore para businessClosures.';
+    message.className = 'error-msg';
+    message.style.display = 'block';
+  }
+};
+
+window.deleteBusinessClosure = async function(date) {
+  if (!confirm(`¿Eliminar el cierre del ${formatDate(date)}?`)) return;
+  try {
+    await deleteDoc(doc(db, 'businessClosures', date));
+    businessClosuresCache = null;
+    await loadBusinessClosuresAdmin();
+  } catch (error) {
+    console.error(error);
+    alert('No se pudo eliminar el cierre. Verifica las reglas de Firestore.');
+  }
+};
+
 window.handleBooking = async function() {
   const service = document.getElementById('book-service').value;
   const date = document.getElementById('book-date').value;
@@ -260,6 +444,21 @@ window.handleBooking = async function() {
   const today = new Date(); today.setHours(0,0,0,0);
   if (selectedDate < today) {
     errEl.textContent = 'No puedes agendar una cita en una fecha pasada.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  let unavailableReason;
+  try {
+    unavailableReason = await getUnavailableDateReason(date);
+  } catch (error) {
+    console.error('No se pudo comprobar el cierre de la fecha:', error);
+    errEl.textContent = 'No pudimos validar si ese día está disponible. Intenta de nuevo.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (unavailableReason) {
+    errEl.textContent = unavailableReason;
     errEl.style.display = 'block';
     return;
   }
@@ -305,7 +504,7 @@ window.handleBooking = async function() {
       adminEmail: ADMIN_EMAIL
     });
 
-    sucEl.textContent = `✅ ¡Cita agendada! ${service} el ${formatDate(date)} a las ${time}.`;
+    sucEl.textContent = `✅ ¡Cita agendada! ${service} el ${formatDate(date)} a las ${time}. Recibirás confirmación por correo.`;
     sucEl.style.display = 'block';
 
     // Limpiar formulario
@@ -868,6 +1067,21 @@ window.handleAdminBooking = async function() {
     return;
   }
 
+  let unavailableReason;
+  try {
+    unavailableReason = await getUnavailableDateReason(date);
+  } catch (error) {
+    console.error('No se pudo comprobar el cierre de la fecha:', error);
+    errEl.textContent = 'No pudimos validar si ese día está disponible. Intenta de nuevo.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (unavailableReason) {
+    errEl.textContent = unavailableReason;
+    errEl.style.display = 'block';
+    return;
+  }
+
   try {
     const apptData = {
       userId: 'admin-created',
@@ -1000,7 +1214,7 @@ function poblarSelects() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = dateKey(new Date());
   ['book-date', 'admin-book-date'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.min = today;
