@@ -168,8 +168,10 @@ window.handleRegister = async function() {
     return;
   }
 
+  let cred = null; // lo declaramos afuera para poder usarlo en el catch
+
   try {
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    cred = await createUserWithEmailAndPassword(auth, email, password);
     const role = email === ADMIN_EMAIL ? 'admin' : 'cliente';
 
     await setDoc(doc(db, 'users', cred.user.uid), {
@@ -193,6 +195,10 @@ window.handleRegister = async function() {
     });
 
   } catch (e) {
+     // Si la cuenta se creó pero Firestore rechazó los datos, la deshacemos
+    if (cred) {
+      await cred.user.delete().catch(() => {});
+    }  
     errEl.textContent = firebaseError(e.code);
     errEl.style.display = 'block';
   }
