@@ -92,28 +92,75 @@ onAuthStateChanged(auth, async (user) => {
 // ============================================================
 // REGISTRO
 // ============================================================
+// ============================================================
+// REGISTRO
+// ============================================================
+
+// Reglas de formato: cada una es un "molde" que el dato debe encajar
+const REGLAS = {
+  // Letras (incluye tildes y ñ), permite espacios, ' y - entre palabras
+  nombre: /^\p{L}+([ '-]\p{L}+)*$/u,
+  // algo@algo.dominio, sin espacios
+  email: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
+  // Celular colombiano: empieza por 3 y tiene 10 dígitos
+  telefono: /^3\d{9}$/,
+};
+
+// Revisa los datos y devuelve el PRIMER error que encuentre (o null si todo está bien)
+function validarRegistro({ name, lastname, email, phone, password }) {
+  if (!name || !lastname || !email || !phone || !password) {
+    return { campo: null, mensaje: 'Por favor completa todos los campos.' };
+  }
+  if (name.length < 2 || !REGLAS.nombre.test(name)) {
+    return { campo: 'reg-name', mensaje: 'El nombre solo puede tener letras (mínimo 2).' };
+  }
+  if (lastname.length < 2 || !REGLAS.nombre.test(lastname)) {
+    return { campo: 'reg-lastname', mensaje: 'El apellido solo puede tener letras (mínimo 2).' };
+  }
+  if (!REGLAS.email.test(email)) {
+    return { campo: 'reg-email', mensaje: 'Escribe un correo válido, ej: nombre@gmail.com' };
+  }
+  if (!REGLAS.telefono.test(phone)) {
+    return { campo: 'reg-phone', mensaje: 'El teléfono debe ser un celular de 10 dígitos que empiece por 3.' };
+  }
+  if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+    return { campo: 'reg-password', mensaje: 'La contraseña debe tener mínimo 8 caracteres, con al menos una letra y un número.' };
+  }
+  return null; // todo bien
+}
+
+// Muestra el error y marca el campo en rojo
+function mostrarErrorRegistro(errEl, error) {
+  errEl.textContent = error.mensaje;
+  errEl.style.display = 'block';
+  if (error.campo) {
+    const input = document.getElementById(error.campo);
+    input.classList.add('input-error');
+    input.focus();
+  }
+}
+
 window.handleRegister = async function() {
-  const name = document.getElementById('reg-name').value.trim();
-  const lastname = document.getElementById('reg-lastname').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const phone = document.getElementById('reg-phone').value.trim();
+  // Normalizamos ANTES de validar
+  const name = document.getElementById('reg-name').value.trim().replace(/\s+/g, ' ');
+  const lastname = document.getElementById('reg-lastname').value.trim().replace(/\s+/g, ' ');
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const phone = document.getElementById('reg-phone').value.replace(/[\s-]/g, '');
   const password = document.getElementById('reg-password').value;
   const errEl = document.getElementById('register-error');
 
+  // Limpiamos errores de un intento anterior
   errEl.style.display = 'none';
+  document.querySelectorAll('#page-register .input-error')
+    .forEach(el => el.classList.remove('input-error'));
 
-  if (!name || !lastname || !email || !password) {
-    errEl.textContent = 'Por favor completa todos los campos obligatorios.';
-    errEl.style.display = 'block';
-    return;
-  }
-  if (password.length < 6) {
-    errEl.textContent = 'La contraseña debe tener mínimo 6 caracteres.';
-    errEl.style.display = 'block';
+  const error = validarRegistro({ name, lastname, email, phone, password });
+  if (error) {
+    mostrarErrorRegistro(errEl, error);
     return;
   }
 
-// Validar aceptación de términos
+  // Validar aceptación de términos
   const terms = document.getElementById('reg-terms');
   if (!terms.checked) {
     errEl.textContent = 'Debes aceptar el tratamiento de datos personales para registrarte.';

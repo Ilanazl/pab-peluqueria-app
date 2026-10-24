@@ -79,24 +79,24 @@
           <div class="form-row">
             <div class="form-group">
               <label>Nombre</label>
-              <input type="text" id="reg-name" placeholder="Tu nombre"/>
+              <input type="text" id="reg-name" placeholder="Tu nombre" maxlength="40" autocomplete="given-name"/>
             </div>
             <div class="form-group">
               <label>Apellido</label>
-              <input type="text" id="reg-lastname" placeholder="Tu apellido"/>
+              <input type="text" id="reg-lastname" placeholder="Tu apellido" maxlength="40" autocomplete="family-name"/>
             </div>
           </div>
           <div class="form-group">
             <label>Correo electrónico</label>
-            <input type="email" id="reg-email" placeholder="tucorreo@email.com"/>
+            <input type="email" id="reg-email" placeholder="tucorreo@email.com" maxlength="100" autocomplete="email"/>
           </div>
           <div class="form-group">
             <label>Teléfono</label>
-            <input type="tel" id="reg-phone" placeholder="300 000 0000"/>
+            <input type="tel" id="reg-phone" placeholder="300 000 0000" maxlength="13" autocomplete="tel"/>
           </div>
           <div class="form-group">
             <label>Contraseña</label>
-            <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres"/>
+            <input type="password" id="reg-password" placeholder="Mínimo 8 caracteres, con letra y número" autocomplete="new-password"/>
           </div>
 
             <div class="form-group terms-group">
@@ -321,13 +321,9 @@
           </div>
           <section class="dashboard-panel calendar-setup-panel">
             <h3>Google Calendar</h3>
-            <div id="google-calendar-connection"></div>
-            <p>PAB consulta el calendario público de festivos colombianos de Google. También puedes añadir fechas especiales directamente desde este panel. No necesitas publicar tu calendario personal.</p>
-            <ol>
-              <li>En Google Cloud activa Google Calendar API y crea una clave restringida a tu dominio y a esa API.</li>
-              <li>Pega la clave en <code>firebase-config.js</code>. El ID del calendario colombiano ya viene configurado.</li>
-              <li>Opcional: configura un segundo calendario público, separado, para leer otros cierres desde Google.</li>
-            </ol>
+            
+            <p>PAB consulta el calendario público de festivos colombianos de Google. También puedes añadir fechas especiales directamente desde este panel.</p>
+           
           </section>
           <section class="dashboard-panel">
             <h3>Agregar cierre manual en PAB</h3>
