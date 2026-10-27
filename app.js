@@ -182,7 +182,7 @@ window.handleRegister = async function() {
       consentimiento: {
     aceptado: true,
     fecha: serverTimestamp(),       
-    version: 'v1.0',              
+    version: 'v1.1',              
     metodo: 'checkbox-registro'     
   }
     });
