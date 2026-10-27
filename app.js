@@ -545,7 +545,7 @@ window.handleBooking = async function() {
     const docRef = await addDoc(collection(db, 'appointments'), apptData);
 
      // Marcar el horario como ocupado (documento sin datos personales)
-    await setDoc(slotRef, { date, time, occupied: true });
+    await setDoc(slotRef, { date, time, occupied: true, appointmentId: docRef.id });
 
     // Notificar via sendEmail webhook → correo al cliente y al admin
     sendEmail('nueva_cita', {
@@ -1287,3 +1287,31 @@ if (grid) {
   `).join('');
 }
 });
+
+// ============================================================
+// MIGRACIÓN (usar UNA vez, como admin, desde la consola)
+// Agrega appointmentId a los horarios de las citas futuras activas
+// ============================================================
+window.migrarSlots = async function() {
+  if (currentUserData?.role !== 'admin') {
+    console.log('Solo el admin puede ejecutar esto.');
+    return;
+  }
+  // Fecha de hoy en hora de Colombia, formato AAAA-MM-DD
+  const hoy = new Date().toLocaleDateString('en-CA');
+  const snap = await getDocs(collection(db, 'appointments'));
+  let actualizados = 0;
+
+  for (const d of snap.docs) {
+    const a = d.data();
+    // Saltamos citas canceladas o que ya pasaron
+    if (a.status === 'cancelada' || a.date < hoy) continue;
+
+    const slotId = a.slotId || `${a.date}_${a.time}`;
+    await setDoc(doc(db, 'occupiedSlots', slotId), {
+      date: a.date, time: a.time, occupied: true, appointmentId: d.id
+    });
+    actualizados++;
+  }
+  console.log(`Horarios actualizados: ${actualizados}`);
+};
