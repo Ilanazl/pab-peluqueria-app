@@ -16,7 +16,7 @@ export const HORARIOS = [
   "7:00 AM",
   "08:00 AM", "09:00 AM",
   "10:00 AM", "11:00 AM",
-  "12:00 AM", "13:00 PM",
+  "12:00 PM", "13:00 PM",
   "14:00 PM", "15:00 PM",
   "16:00 PM", "17:00 PM",
   "18:00 PM", "19:00 PM",
@@ -41,3 +41,23 @@ export const CORTES_OVERLAY = [
   { nombre: "Mullet moderno", imagen: "assets/cortes/mullet-moderno.png" },
   
 ];
+
+// ============================================================
+// DATOS DEL NEGOCIO - se muestran en la página de inicio
+// ============================================================
+export const NEGOCIO = {
+  
+  direccion: "Calle 30#14-43",
+  
+  ciudad: "Buga, Valle del Cauca",
+  correo: "pabpeluqueria.contacto@gmail.com",
+  horario: [
+    { dias: "Lunes a sábado", horas: "7:00 a. m. – 8:00 p. m." },
+    { dias: "Domingos y festivos", horas: "Cerrado" },
+  ],
+};
+
+// Opiniones REALES de clientas (con su permiso). Mientras esta lista esté
+// vacía, la sección de testimonios NO se muestra en la página.
+// Ejemplo: { texto: "Me encantó el corte, súper rápido agendar", autor: "Laura M." }
+export const TESTIMONIOS = [];

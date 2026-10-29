@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PAB Peluquería</title>
+  <title>PAB Peluquería | Agenda tu cita en línea</title>
+  <meta name="description" content="Agenda tu cita en PAB Peluquería en menos de un minuto: cortes, tintes, cepillado y más."/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
 </head>
@@ -18,30 +19,138 @@
           <button class="btn-primary" onclick="showPage('page-register')">Registrarse</button>
         </div>
       </nav>
+
+      <!-- ===== HERO: foto de fondo que se difumina al bajar (lo controla landing.js) ===== -->
       <section class="hero">
-        <div class="hero-badge">✂️ Estilo & Cuidado Personal</div>
-        <h1>Tu belleza,<br/><em>nuestra pasión</em></h1>
-        <p>Agenda tu cita en minutos. Cortes, tintes, cepillado y mucho más para toda la familia.</p>
-        <div class="hero-actions">
-          <button class="btn-primary btn-large" onclick="showPage('page-register')">Agendar Cita</button>
-          <button class="btn-outline btn-large" onclick="scrollToServices()">Ver Servicios</button>
+        <!-- La foto se define en styles.css (.hero-media). Guárdala como assets/hero-peluquera.jpg
+             Si prefieres VIDEO, descomenta esto (muted + playsinline son obligatorios en celular):
+             <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-peluquera.jpg">
+               <source src="assets/hero.mp4" type="video/mp4">
+             </video>
+             y ponlo DENTRO del div hero-media de abajo. -->
+        <div class="hero-media" id="hero-media"></div>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content" id="hero-content">
+          <div class="hero-badge">✂️ Estilo &amp; Cuidado Personal</div>
+          <h1>Tu belleza,<br/><em>nuestra pasión</em></h1>
+          <p>Reserva en línea a cualquier hora, recibe la confirmación en tu correo y llega directo a tu turno. Sin llamadas, sin esperar respuesta.</p>
+          <div class="hero-actions">
+            <button class="btn-primary btn-large" onclick="showPage('page-register')">Agendar Cita</button>
+            <button class="btn-outline btn-large" onclick="scrollToServices()">Ver Servicios</button>
+          </div>
+          <!-- Datos reales calculados desde data.js (ver landing.js) -->
+          <div class="hero-stats">
+            <div class="stat"><strong id="stat-servicios">–</strong><span>Servicios</span></div>
+            <div class="stat"><strong>24/7</strong><span>Reservas en línea</span></div>
+            <div class="stat"><strong id="stat-precio">–</strong><span>Precios desde</span></div>
+          </div>
         </div>
-        <div class="hero-stats">
-          <div class="stat"><span>Clientes felices</span></div>
-          <div class="stat"><strong>6</strong><span>Servicios</span></div>
-          <div class="stat"><strong>5★</strong><span>Calificación</span></div>
-        </div>
+
+        <a href="#beneficios" class="hero-scroll" aria-label="Bajar a más información"><span></span></a>
       </section>
-      <section class="services-section" id="services">
-        <h2>Nuestros Servicios</h2>
-        <p class="section-subtitle">Cuidado profesional para toda la familia</p>
-        <div class="services-grid" id="services-grid"></div>
-        
+
+      <!-- Todo lo de aquí abajo "tapa" la foto fija del hero -->
+      <div class="landing-body">
+
+        <!-- ===== POR QUÉ ELEGIRNOS ===== -->
+        <section class="landing-section" id="beneficios">
+          <p class="landing-eyebrow">¿Por qué PAB?</p>
+          <h2 class="landing-title">Pensado para que no pierdas tiempo</h2>
+          <div class="benefits-grid">
+            <article class="benefit-card reveal">
+              <div class="benefit-icon">📅</div>
+              <h3>Agenda 24/7</h3>
+              <p>Elige día y hora disponibles desde tu celular, incluso de noche.</p>
+            </article>
+            <article class="benefit-card reveal">
+              <div class="benefit-icon">✉️</div>
+              <h3>Confirmación inmediata</h3>
+              <p>Te llega un correo con los detalles de tu cita apenas reservas.</p>
+            </article>
+            <article class="benefit-card reveal">
+              <div class="benefit-icon">🪞</div>
+              <h3>Prueba tu corte</h3>
+              <p>Mira cómo te quedaría un corte sobre tu foto antes de decidir. Tu foto no se guarda.</p>
+            </article>
+            <article class="benefit-card reveal">
+              <div class="benefit-icon">🎁</div>
+              <h3>Turno solo para ti</h3>
+              <p>Llegas a tu hora reservada: sin filas ni esperas.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ===== CÓMO FUNCIONA ===== -->
+        <section class="landing-section landing-section--soft">
+          <h2 class="landing-title">Reservar toma menos de un minuto</h2>
+          <ol class="steps">
+            <li class="reveal"><span>1</span><h3>Crea tu cuenta</h3><p>Solo nombre, correo y teléfono.</p></li>
+            <li class="reveal"><span>2</span><h3>Elige servicio, día y hora</h3><p>Solo ves horarios disponibles.</p></li>
+            <li class="reveal"><span>3</span><h3>Confirma y listo</h3><p>Te avisamos por correo.</p></li>
+          </ol>
+        </section>
+
+        <!-- ===== SERVICIOS (se llenan solos desde data.js en app.js) ===== -->
+        <section class="services-section" id="services">
+          <h2>Nuestros Servicios</h2>
+          <p class="section-subtitle">Cuidado profesional para toda la familia</p>
+          <div class="services-grid" id="services-grid"></div>
+        </section>
+
+        <!-- ===== TESTIMONIOS (oculta hasta que agregues opiniones reales en data.js) ===== -->
+        <section class="landing-section landing-section--soft" id="testimonios" hidden>
+          <h2 class="landing-title">Lo que dicen nuestras clientas</h2>
+          <div class="testimonials-grid" id="testimonios-grid"></div>
+        </section>
+
+        <!-- ===== UBICACIÓN Y HORARIO (datos en data.js → NEGOCIO) ===== -->
+        <section class="landing-section" id="ubicacion">
+          <div class="location">
+            <div class="location-info reveal">
+              <p class="landing-eyebrow">Visítanos</p>
+              <h2 class="landing-title">¿Dónde estamos?</h2>
+              <p class="location-address">📍 <span id="negocio-direccion"></span></p>
+              <h3>Horario</h3>
+              <ul class="hours" id="negocio-horario"></ul>
+              <a class="btn-primary btn-large location-btn" id="negocio-ruta" target="_blank" rel="noopener">Cómo llegar</a>
+            </div>
+            <div class="location-map reveal">
+              <iframe id="negocio-mapa" title="Ubicación de PAB Peluquería" loading="lazy"
+                      referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== LLAMADO FINAL ===== -->
+        <section class="landing-cta">
+          <div class="reveal">
+            <h2>¿Lista para tu cambio?</h2>
+            <p>Tu próximo turno está a un clic.</p>
+            <button class="btn-light btn-large" onclick="showPage('page-register')">Agendar ahora</button>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <p>© 2026 PAB Peluquería — <span id="negocio-ciudad"></span> 🇨🇴 ·
+            <a href="/politica-privacidad.html" target="_blank">Política de privacidad</a></p>
+        </footer>
+      </div>
+
+      <!-- ===== BOTÓN FLOTANTE DE CONTACTO ===== -->
+      <div class="contact" id="contact">
+        <div class="contact-panel" id="contact-panel" role="dialog" aria-label="Contacto">
+          <p class="contact-title">¿Tienes una pregunta?</p>
+          <p class="contact-text">Escríbenos y te respondemos lo antes posible.</p>
+          <a class="btn-primary btn-full contact-mail" id="contact-mail">✉️ Enviar correo</a>
+          <!-- Por si el celular no tiene una app de correo configurada -->
+          <button class="contact-copy" id="contact-copy" type="button"></button>
         </div>
-      </section>
-      <footer class="footer">
-        <p>© 2026 PAB Peluquería — Cali, Valle del Cauca 🇨🇴</p>
-      </footer>
+        <button class="contact-fab" id="contact-btn" aria-expanded="false" aria-controls="contact-panel" aria-label="Contactar">
+          <svg class="icon-mail" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <svg class="icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
     </div>
 
     <!-- LOGIN PAGE -->
@@ -428,9 +537,12 @@
       </div>
     </div>
 
+  </div><!-- cierre de #app -->
+
   <!-- Firebase SDK -->
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="app.js"></script>
   <script type="module" src="canvas-simulator.js"></script>
+  <script type="module" src="landing.js"></script>
 </body>
 </html>
