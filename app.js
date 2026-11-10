@@ -595,12 +595,12 @@ window.loadUserAppointments = async function() {
     }
 
     container.innerHTML = appts.map(a => `
-      <div class="appt-card ${a.status}">
+      <div class="appt-card ${escapeHtml(a.status)}">
         <div class="appt-info">
-          <h4>${a.service}</h4>
-          <p>📅 ${formatDate(a.date)} — ⏰ ${a.time}</p>
-          ${a.note ? `<p>📝 ${a.note}</p>` : ''}
-          <span class="status-badge status-${a.status}">${a.status}</span>
+          <h4>${escapeHtml(a.service)}</h4>
+          <p>📅 ${formatDate(a.date)} — ⏰ ${escapeHtml(a.time)}</p>
+          ${a.note ? `<p>📝 ${escapeHtml(a.note)}</p>` : ''}
+          <span class="status-badge status-${escapeHtml(a.status)}">${escapeHtml(a.status)}</span>
           ${a.esRecompensa ? `<span class="status-badge reward-badge">🎁 Corte gratis</span>` : ''}
         </div>
         <div class="appt-actions">
@@ -671,19 +671,19 @@ function renderAppointments(appts) {
     return;
   }
   container.innerHTML = appts.map(a => `
-    <div class="appt-card ${a.status}">
+    <div class="appt-card ${escapeHtml(a.status)}">
       <div class="appt-info">
-        <span class="client-name">👤 ${a.userName}</span>
-        <h4>${a.service}</h4>
-        <p>📅 ${formatDate(a.date)} — ⏰ ${a.time}</p>
-        <p>📧 ${a.userEmail} ${a.userPhone ? '| 📱 ' + a.userPhone : ''}</p>
-        ${a.note ? `<p>📝 ${a.note}</p>` : ''}
-        <span class="status-badge status-${a.status}">${a.status}</span>
+        <span class="client-name">👤 ${escapeHtml(a.userName)}</span>
+        <h4>${escapeHtml(a.service)}</h4>
+        <p>📅 ${formatDate(a.date)} — ⏰ ${escapeHtml(a.time)}</p>
+        <p>📧 ${escapeHtml(a.userEmail)} ${a.userPhone ? '| 📱 ' + escapeHtml(a.userPhone) : ''}</p>
+        ${a.note ? `<p>📝 ${escapeHtml(a.note)}</p>` : ''}
+        <span class="status-badge status-${escapeHtml(a.status)}">${escapeHtml(a.status)}</span>
         ${a.esRecompensa ? `<span class="status-badge reward-badge">🎁 Corte gratis</span>` : ''}
       </div>
       <div class="appt-actions">
         <button class="btn-edit" onclick="openEditAppointment('${a.id}')">✏️ Editar</button>
-        ${a.status === 'pendiente' ? `<button class="btn-confirm" onclick="confirmAppointment('${a.id}', '${a.userEmail}', '${a.userName}', '${a.service}', '${a.date}', '${a.time}')">✓ Confirmar</button>` : ''}
+        ${a.status === 'pendiente' ? `<button class="btn-confirm" onclick="confirmAppointment('${a.id}')">✓ Confirmar</button>` : ''}
         ${a.status === 'confirmada' ? `<button class="btn-confirm" onclick="markAppointmentCompleted('${a.id}')">✓ Completada</button>` : ''}
         <button class="btn-danger" onclick="deleteAppointment('${a.id}')">🗑️</button>
       </div>
@@ -758,13 +758,19 @@ window.saveEditAppointment = async function() {
   loadAllAppointments();
 };
 
-window.confirmAppointment = async function(id, email, name, service, date, time) {
-  await updateDoc(doc(db, 'appointments', id), { status: 'confirmada' });
+window.confirmAppointment = async function(id) {
+  // Leemos la cita desde Firestore en vez de recibir sus datos por el onclick
+  const apptRef = doc(db, 'appointments', id);
+  const apptSnap = await getDoc(apptRef);
+  if (!apptSnap.exists()) return;
+  const a = apptSnap.data();
+
+  await updateDoc(apptRef, { status: 'confirmada' });
 
   sendEmail('cita_confirmada', {
-    userEmail: email,
-    userName: name,
-    service, date, time,
+    userEmail: a.userEmail,
+    userName: a.userName,
+    service: a.service, date: a.date, time: a.time,
     adminEmail: ADMIN_EMAIL
   });
 
@@ -1048,10 +1054,10 @@ window.loadAllUsers = async function() {
 
     container.innerHTML = allUsers.map(u => `
       <div class="user-card">
-        <div class="user-avatar">${u.name ? u.name[0].toUpperCase() : '?'}</div>
+        <div class="user-avatar">${u.name ? escapeHtml(u.name[0].toUpperCase()) : '?'}</div>
         <div class="user-info">
-          <h4>${u.name} ${u.lastname || ''} ${u.role === 'admin' ? '👑' : ''}</h4>
-          <p>📧 ${u.email} ${u.phone ? '| 📱 ' + u.phone : ''}</p>
+          <h4>${escapeHtml(u.name)} ${escapeHtml(u.lastname || '')} ${u.role === 'admin' ? '👑' : ''}</h4>
+          <p>📧 ${escapeHtml(u.email)} ${u.phone ? '| 📱 ' + escapeHtml(u.phone) : ''}</p>
           <p>Citas agendadas: ${conteoPorUsuario[u.id] || 0}</p>
           <p>Registrado: ${u.createdAt ? new Date(u.createdAt.seconds * 1000).toLocaleDateString('es-CO') : 'N/A'}</p>
         </div>
@@ -1207,7 +1213,8 @@ function formatDate(dateStr) {
   if (!dateStr) return '';
   const [y, m, d] = dateStr.split('-');
   const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return `${d} ${months[parseInt(m)-1]} ${y}`;
+  // escapeHtml: la fecha viene de la base de datos y se inserta como HTML
+  return escapeHtml(`${d} ${months[parseInt(m)-1]} ${y}`);
 }
 
 function firebaseError(code) {
