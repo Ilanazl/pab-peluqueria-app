@@ -34,7 +34,7 @@
         <div class="hero-content" id="hero-content">
           <div class="hero-badge">✂️ Estilo &amp; Cuidado Personal</div>
           <h1>Tu belleza,<br/><em>nuestra pasión</em></h1>
-          <p>Reserva en línea a cualquier hora, recibe la confirmación en tu correo y llega directo a tu turno. Sin llamadas, sin esperar respuesta.</p>
+          <p>Reserva en línea a cualquier hora y llega directo a tu turno. Sin llamadas, sin esperar respuesta.</p>
           <div class="hero-actions">
             <button class="btn-primary btn-large" onclick="showPage('page-register')">Agendar Cita</button>
             <button class="btn-outline btn-large" onclick="scrollToServices()">Ver Servicios</button>
@@ -66,12 +66,12 @@
             <article class="benefit-card reveal">
               <div class="benefit-icon">✉️</div>
               <h3>Confirmación inmediata</h3>
-              <p>Te llega un correo con los detalles de tu cita apenas reservas.</p>
+              <p>Le llega un correo al administrador apenas reserves.</p>
             </article>
             <article class="benefit-card reveal">
               <div class="benefit-icon">🪞</div>
               <h3>Prueba tu corte</h3>
-              <p>Mira cómo te quedaría un corte sobre tu foto antes de decidir. Tu foto no se guarda.</p>
+              <p>Mira cómo te quedaría un corte sobre tu foto antes de decidir.</p>
             </article>
             <article class="benefit-card reveal">
               <div class="benefit-icon">🎁</div>
@@ -238,6 +238,9 @@
           <button class="tab-btn active" onclick="switchTab('tab-book', this)">📅 Agendar Cita</button>
           <button class="tab-btn" onclick="switchTab('tab-appointments', this)">📋 Mis Citas</button>
           <button class="tab-btn" onclick="switchTab('tab-simulator', this)">🖼️ Probar Corte</button>
+        </div>
+
+        <!-- PROBAR CORTE -->
         <div id="tab-simulator" class="tab-content">
   <div class="book-card">
     <h2>Prueba un corte</h2>
@@ -266,14 +269,13 @@
       <button class="btn-primary" onclick="downloadSimulatorResult()">⬇ Descargar</button>
     </div>
   </div>
-</div>  
-        </div>
+</div>
 
         <!-- AGENDAR CITA -->
         <div id="tab-book" class="tab-content active">
           <div class="book-card">
-            <h2>Agenda tu cita</h2>
-            <div id="loyalty-badge" class="loyalty-badge"></div>
+            <!-- Mensaje de fidelidad: lo escribe loadLoyaltyStatus() en app.js -->
+            <h2 id="loyalty-badge" class="loyalty-badge"></h2>
             <div id="book-success" class="success-msg" style="display:none"></div>
             <div id="book-error" class="error-msg" style="display:none"></div>
             <div class="form-group">

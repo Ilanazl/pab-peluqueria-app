@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
   tarjetas.forEach((tarjeta) => {
     tarjeta.classList.add('reveal');
     // Toda la tarjeta lleva a registrarse para agendar
-    tarjeta.insertAdjacentHTML('beforeend', '<span class="service-book">Reservar →</span>');
+    // Se agrega dentro de la parte de texto, debajo del nombre
+    tarjeta.querySelector('.service-body').insertAdjacentHTML('beforeend', '<span class="service-book">Reservar →</span>');
     tarjeta.addEventListener('click', () => window.showPage('page-register'));
   });
   vigilar(tarjetas);

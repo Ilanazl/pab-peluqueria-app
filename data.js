@@ -3,13 +3,15 @@
 // Solo cambia aquí y se actualiza en toda la app
 // ============================================================
 
+// emoji  → se usa en las listas desplegables (un <select> no puede mostrar fotos)
+// imagen → foto de la tarjeta en "Nuestros Servicios". Guárdalas en /assets/servicios/
 export const SERVICIOS = [
-  { nombre: "Corte Caballero", emoji: "💈", precio: 12000 },
-  { nombre: "Corte Dama",      emoji: "💇‍♀️", precio: 12000 },
-  { nombre: "Corte Niños",     emoji: "👦",  precio: 10000 },
-  { nombre: "Tinte",           emoji: "🎨",  precio: 12000 },
-  { nombre: "Cepillado",       emoji: "💨",  precio: 25000 },
-  { nombre: "Planchado",       emoji: "🔥",  precio: 25000 },
+  { nombre: "Corte Caballero", emoji: "💈", precio: 12000, imagen: "assets/servicios/corte-caballero.jpg" },
+  { nombre: "Corte Dama",      emoji: "💇‍♀️", precio: 12000, imagen: "assets/servicios/corte-dama.jpg" },
+  { nombre: "Corte Niños",     emoji: "👦",  precio: 10000, imagen: "assets/servicios/corte-ninos.jpg" },
+  { nombre: "Tinte",           emoji: "🎨",  precio: 12000, imagen: "assets/servicios/tinte.jpg" },
+  { nombre: "Cepillado",       emoji: "💨",  precio: 25000, imagen: "assets/servicios/cepillado.jpg" },
+  { nombre: "Planchado",       emoji: "🔥",  precio: 25000, imagen: "assets/servicios/planchado.jpg" },
 ];
 
 export const HORARIOS = [
@@ -61,3 +63,10 @@ export const NEGOCIO = {
 // vacía, la sección de testimonios NO se muestra en la página.
 // Ejemplo: { texto: "Me encantó el corte, súper rápido agendar", autor: "Laura M." }
 export const TESTIMONIOS = [];
+
+// ============================================================
+// PROGRAMA DE FIDELIDAD
+// Cortes PAGADOS que debe completar el cliente para que el siguiente sea gratis.
+// 5 pagados → el SEXTO es gratis.
+// ============================================================
+export const CORTES_PARA_RECOMPENSA = 5;

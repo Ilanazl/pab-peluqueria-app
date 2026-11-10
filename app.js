@@ -18,7 +18,7 @@ import {
   addDoc, updateDoc, deleteDoc,
   query, where, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { SERVICIOS, HORARIOS } from "./data.js";
+import { SERVICIOS, HORARIOS, CORTES_PARA_RECOMPENSA } from "./data.js";
 
 // ============================================================
 // ESTADO GLOBAL
@@ -798,7 +798,7 @@ window.markAppointmentCompleted = async function(id) {
       await updateDoc(userRef, { recompensaDisponible: false });
     } else {
       const nuevoConteo = (userData.cortesCompletados || 0) + 1;
-      if (nuevoConteo >= 6) {
+      if (nuevoConteo >= CORTES_PARA_RECOMPENSA) {
         await updateDoc(userRef, { cortesCompletados: 0, recompensaDisponible: true });
       } else {
         await updateDoc(userRef, { cortesCompletados: nuevoConteo });
@@ -1234,8 +1234,8 @@ async function loadLoyaltyStatus() {
     badge.innerHTML = `🎁 <strong>¡Tienes un corte gratis disponible!</strong> Selecciónalo al agendar tu próxima cita.`;
     badge.classList.add('reward-ready');
   } else {
-    const faltan = 6 - conteo;
-    badge.innerHTML = `✂️ Te faltan <strong>${faltan}</strong> corte${faltan === 1 ? '' : 's'} para tu sexto corte gratis (${conteo}/6)`;
+    const faltan = CORTES_PARA_RECOMPENSA - conteo;
+    badge.innerHTML = `✂️ Te falta${faltan === 1 ? '' : 'n'} <strong>${faltan}</strong> corte${faltan === 1 ? '' : 's'} para tu sexto corte gratis (${conteo}/${CORTES_PARA_RECOMPENSA})`;
     badge.classList.remove('reward-ready');
   }
 
@@ -1278,11 +1278,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tarjetas de servicios en el landing
 const grid = document.getElementById('services-grid');
 if (grid) {
+  // Cada tarjeta lleva la foto del servicio arriba y el texto abajo.
+  // loading="lazy": la foto solo se descarga cuando la clienta llega a esta sección.
+  // El emoji queda DETRÁS de la foto: si la foto existe, la tapa; si no existe,
+  // onerror quita la foto y se ve el emoji (nunca un ícono de imagen rota).
   grid.innerHTML = SERVICIOS.map(s => `
     <div class="service-card">
-      <div class="service-icon">${s.emoji}</div>
-      <h3>${s.nombre}</h3>
-      <span class="service-price">Desde $${s.precio.toLocaleString('es-CO')}</span>
+      <div class="service-photo">
+        <span class="service-photo-emoji" aria-hidden="true">${s.emoji}</span>
+        <img src="${s.imagen}" alt="${s.nombre} en PAB Peluquería" loading="lazy"
+             width="800" height="600" onerror="this.remove()"/>
+        <span class="service-price">Desde $${s.precio.toLocaleString('es-CO')}</span>
+      </div>
+      <div class="service-body">
+        <h3>${s.nombre}</h3>
+      </div>
     </div>
   `).join('');
 }
