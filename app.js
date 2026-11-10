@@ -557,7 +557,7 @@ window.handleBooking = async function() {
       adminEmail: ADMIN_EMAIL
     });
 
-    sucEl.textContent = `✅ ¡Cita agendada! ${service} el ${formatDate(date)} a las ${time}. Recibirás confirmación por correo.`;
+    sucEl.textContent = `✅ ¡Cita agendada! ${service} el ${formatDate(date)} a las ${time}`;
     sucEl.style.display = 'block';
 
     // Limpiar formulario
