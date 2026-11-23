@@ -22,13 +22,12 @@
 
       <!-- ===== HERO: foto de fondo que se difumina al bajar (lo controla landing.js) ===== -->
       <section class="hero">
-        <!-- La foto se define en styles.css (.hero-media). Guárdala como assets/hero-peluquera.jpg
-             Si prefieres VIDEO, descomenta esto (muted + playsinline son obligatorios en celular):
-             <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-peluquera.jpg">
-               <source src="assets/hero.mp4" type="video/mp4">
-             </video>
-             y ponlo DENTRO del div hero-media de abajo. -->
-        <div class="hero-media" id="hero-media"></div>
+        <!-- Fondo del hero: la foto (styles.css) queda de respaldo y encima va el video.
+             El video NO tiene src aquí: landing.js elige la versión vertical (celular)
+             o horizontal (computador) según la pantalla. muted + playsinline = autoplay en celular. -->
+        <div class="hero-media" id="hero-media">
+          <video class="hero-video" id="hero-video" muted loop playsinline preload="none" aria-hidden="true"></video>
+        </div>
         <div class="hero-overlay"></div>
 
         <div class="hero-content" id="hero-content">

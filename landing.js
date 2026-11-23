@@ -59,7 +59,33 @@ function actualizarHero() {
   heroMedia.style.filter = `blur(${progreso * 8}px)`;       // se desenfoca
   heroContent.style.opacity = 1 - progreso * 1.6;           // el texto se va más rápido
   heroContent.style.transform = `translateY(${progreso * 60}px)`;
+
+  // Cuando el video ya casi no se ve, lo pausamos: ahorra batería y evita trabones al bajar
+  if (heroVideo && heroVideo.src) {
+    if (progreso > 0.6) heroVideo.pause();
+    else if (heroVideo.paused) heroVideo.play().catch(() => {});
+  }
 }
+
+// ------------------------------------------------------------
+// Video del hero: elige versión según la pantalla
+// ------------------------------------------------------------
+const heroVideo = document.getElementById('hero-video');
+
+function iniciarVideoHero() {
+  if (!heroVideo) return;
+  // Si la persona pidió menos animaciones o activó "ahorro de datos", solo dejamos la foto
+  const ahorroDatos = navigator.connection && navigator.connection.saveData;
+  if (reduceMotion || ahorroDatos) { heroVideo.remove(); return; }
+
+  // Pantalla más alta que ancha (celular) → video vertical; si no → horizontal
+  const vertical = window.matchMedia('(max-aspect-ratio: 4/5)').matches;
+  heroVideo.poster = vertical ? 'assets/hero-poster-movil.jpg' : 'assets/hero-poster.jpg';
+  heroVideo.src = vertical ? 'assets/hero-movil.mp4' : 'assets/hero-escritorio.mp4';
+  heroVideo.muted = true; // iOS exige que esté en silencio para reproducir solo
+  heroVideo.play().catch(() => {}); // si el navegador bloquea el autoplay, queda la foto
+}
+iniciarVideoHero();
 
 if (!reduceMotion) {
   window.addEventListener('scroll', () => {
